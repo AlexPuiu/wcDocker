@@ -3669,6 +3669,10 @@ define('wcDocker/frame',[
                 if (!this.$frame.parent()) {
                     this.$center.css('top', '');
                 }
+                //AlexP: Force tab on bottom when undocking a single panel.
+                if (this._tabOrientation == wcDocker.TAB.TOP) {
+                    this._tabOrientation = wcDocker.TAB.BOTTOM;
+                }
                 switch (this._tabOrientation) {
                     case wcDocker.TAB.TOP:
                         this.$frame.prepend(this.$tabBar);
