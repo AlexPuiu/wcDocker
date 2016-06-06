@@ -4995,7 +4995,6 @@ define('wcDocker/layout',[
                 // Top edge
                 else if (mouse.y >= outerOffset.top + titleSize && mouse.y <= outerOffset.top + titleSize + edgeAnchor.y &&
                     mouse.x >= outerOffset.left && mouse.x <= outerOffset.left + outerWidth) {
-                    return false;  //AlexP: cannot disable stacking on the top. Hack.
                     ghost.anchor(mouse, {
                         x: outerOffset.left - 2,
                         y: outerOffset.top - 2,
@@ -5029,7 +5028,6 @@ define('wcDocker/layout',[
 
             // Check for placeholder.
             if (this._parent && this._parent.instanceOf('wcPanel') && this._parent._isPlaceholder) {
-                return false;  //AlexP: cannot disable stacking on the top. Hack.
                 ghost.anchor(mouse, {
                     x: offset.left - 2,
                     y: offset.top - 2,
@@ -5046,7 +5044,6 @@ define('wcDocker/layout',[
                 // Top docking.
                 if (mouse.y >= offset.top && mouse.y <= offset.top + titleSize + panelAnchor.y &&
                     mouse.x >= offset.left && mouse.x <= offset.left + width) {
-                    return false;  //AlexP: cannot disable stacking on the top. Hack.
                     ghost.anchor(mouse, {
                         x: offset.left - 2,
                         y: offset.top - 2,
@@ -5109,7 +5106,6 @@ define('wcDocker/layout',[
                 // Top docking.
                 if (mouse.y >= offset.top && mouse.y <= offset.top + panelAnchor.y + titleSize &&
                     mouse.x >= offset.left && mouse.x <= offset.left + width) {
-                    return false;  //AlexP: cannot disable stacking on the top. Hack.
                     ghost.anchor(mouse, {
                         x: offset.left - 2,
                         y: offset.top - 2,
