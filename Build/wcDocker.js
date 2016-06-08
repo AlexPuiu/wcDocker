@@ -1789,7 +1789,7 @@ define('wcDocker/panel',[
         __init: function () {
             var layoutClass = (this._options && this._options.layout) || 'wcLayoutTable';
             this._layout = new (this.docker().__getClass(layoutClass))(this.$container, this);
-            this.$title = $('<div class="wcPanelTab">');
+            this.$title = $('<div class="wcPanelTab ' + this._title + 'PanelTab">');
             this.$titleText = $('<div>' + this._title + '</div>');
             this.$title.append(this.$titleText);
 
