@@ -1,4 +1,5 @@
-(function () {/**
+(function () {
+/**
  * @license almond 0.3.1 Copyright (c) 2011-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/almond for details
@@ -3668,6 +3669,10 @@ define('wcDocker/frame',[
                 if (!this.$frame.parent()) {
                     this.$center.css('top', '');
                 }
+                //AlexP: Force tab on bottom when undocking a single panel.
+                if (this._tabOrientation == wcDocker.TAB.TOP) {
+                    this._tabOrientation = wcDocker.TAB.BOTTOM;
+                }
                 switch (this._tabOrientation) {
                     case wcDocker.TAB.TOP:
                         this.$frame.prepend(this.$tabBar);
@@ -4884,7 +4889,7 @@ define('wcDocker/layout',[
                 if ((!forceTabOrientation || forceTabOrientation === wcDocker.TAB.TOP) &&
                     mouse.y >= offset.top && mouse.y <= offset.top + titleSize &&
                     mouse.x >= offset.left && mouse.x <= offset.left + width) {
-
+                    return false;  //AlexP: cannot disable stacking on the top. Hack.
                     // Stacking with top orientation.
                     ghost.anchor(mouse, {
                         x: offset.left - 2,

@@ -134,7 +134,7 @@ define([
                 if ((!forceTabOrientation || forceTabOrientation === wcDocker.TAB.TOP) &&
                     mouse.y >= offset.top && mouse.y <= offset.top + titleSize &&
                     mouse.x >= offset.left && mouse.x <= offset.left + width) {
-
+                    return false;  //AlexP: cannot disable stacking on the top. Hack.
                     // Stacking with top orientation.
                     ghost.anchor(mouse, {
                         x: offset.left - 2,
