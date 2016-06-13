@@ -628,7 +628,7 @@ define([
                 }
                 //AlexP: Force tab on bottom when undocking a single panel.
                 if (this._tabOrientation == wcDocker.TAB.TOP) {
-                    this._tabOrientation = wcDocker.TAB.BOTTOM;
+                    //this._tabOrientation = wcDocker.TAB.BOTTOM;
                 }
                 switch (this._tabOrientation) {
                     case wcDocker.TAB.TOP:
