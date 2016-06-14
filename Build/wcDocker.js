@@ -1,5 +1,4 @@
-(function () {
-/**
+(function () {/**
  * @license almond 0.3.1 Copyright (c) 2011-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/almond for details
@@ -3697,7 +3696,7 @@ define('wcDocker/frame',[
                             this.$frame.append(this.$tabBar);
                             this.$tabBar.addClass('wcTabBottom').removeClass('wcTabTop wcTabLeft wcTabRight');
                             // this.$tabBar.css('margin-top', '');
-
+                            $('.wcTabBottom > .wcFrameButtonBar').text('You can dock a panel by dragging it by the tab');
                             this.$center.css('left', 0).css('right', 0).css('bottom', titleSize);
                         } else {
                             this.$tabBar.remove();

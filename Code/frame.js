@@ -654,7 +654,7 @@ define([
                             this.$frame.append(this.$tabBar);
                             this.$tabBar.addClass('wcTabBottom').removeClass('wcTabTop wcTabLeft wcTabRight');
                             // this.$tabBar.css('margin-top', '');
-
+                            $('.wcTabBottom > .wcFrameButtonBar').text('You can dock a panel by dragging it by the tab');
                             this.$center.css('left', 0).css('right', 0).css('bottom', titleSize);
                         } else {
                             this.$tabBar.remove();
