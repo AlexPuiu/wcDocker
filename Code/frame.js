@@ -421,6 +421,9 @@ define([
 
             // Floating windows manage their own sizing.
             if (this._isFloating) {
+                if (event && event.clientX) {  //AlexP
+                    this.mouseX = event.clientX - 20;
+                }
                 var left = (this._pos.x * width) - this._size.x / 2;
                 var top = (this._pos.y * height) - this._size.y / 2;
 
@@ -434,6 +437,10 @@ define([
 
                 if (left + this._size.x / 2 > width) {
                     left = width - this._size.x / 2;
+                }
+
+                if (this.mouseX) {
+                    left = this.mouseX
                 }
 
                 if (top + parseInt(this.$center.css('top')) > height) {

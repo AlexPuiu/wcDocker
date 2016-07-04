@@ -1,4 +1,5 @@
-(function () {/**
+(function () {
+/**
  * @license almond 0.3.1 Copyright (c) 2011-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/almond for details
@@ -2138,7 +2139,7 @@ define('wcDocker/ghost',[
                 this.$ghost.show();
                 this.$ghost.stop().animate({
                     opacity: 0.3,
-                    'margin-left': this._rect.x - this._rect.w / 2 + 'px',
+                    'margin-left': this._rect.x - 20 + 'px',
                     'margin-top': this._rect.y - 10 + 'px',
                     width: this._rect.w + 'px',
                     height: this._rect.h + 'px'
@@ -3463,6 +3464,9 @@ define('wcDocker/frame',[
 
             // Floating windows manage their own sizing.
             if (this._isFloating) {
+                if (event && event.clientX) {  //AlexP
+                    this.mouseX = event.clientX - 20;
+                }
                 var left = (this._pos.x * width) - this._size.x / 2;
                 var top = (this._pos.y * height) - this._size.y / 2;
 
@@ -3476,6 +3480,10 @@ define('wcDocker/frame',[
 
                 if (left + this._size.x / 2 > width) {
                     left = width - this._size.x / 2;
+                }
+
+                if (this.mouseX) {
+                    left = this.mouseX
                 }
 
                 if (top + parseInt(this.$center.css('top')) > height) {
