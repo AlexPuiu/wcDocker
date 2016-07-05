@@ -415,7 +415,7 @@ define([
         },
 
         // Updates the size of the frame.
-        __update: function () {
+        __update: function (resizing) {
             var width = this.$container.width();
             var height = this.$container.height();
 
@@ -439,11 +439,11 @@ define([
                     left = width - this._size.x / 2;
                 }
 
-                if (this.mouseX) {
+                if (this.mouseX && !resizing) {
                     left = this.mouseX
                 }
 
-                if (left < 0) {
+                if (left < 0 && !resizing) {
                    left = 0;
                 }
 

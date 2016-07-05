@@ -1535,7 +1535,7 @@ define([
                     mouse.y += offset.top;
 
                     self._draggingFrame.__resize(self._draggingFrameSizer, mouse);
-                    self._draggingFrame.__update();
+                    self._draggingFrame.__update(true);
                 } else if (self._draggingCustomTabFrame) {
                     if (self._draggingCustomTabFrame.moveable()) {
                         var $hoverTab = $(event.target).hasClass('wcPanelTab') ? $(event.target) : $(event.target).parents('.wcPanelTab');
