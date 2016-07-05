@@ -3486,6 +3486,10 @@ define('wcDocker/frame',[
                     left = this.mouseX
                 }
 
+                if (left < 0) {
+                   left = 0;
+                }
+
                 if (top + parseInt(this.$center.css('top')) > height) {
                     top = height - parseInt(this.$center.css('top'));
                 }
