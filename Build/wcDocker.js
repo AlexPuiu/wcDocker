@@ -3458,7 +3458,7 @@ define('wcDocker/frame',[
         },
 
         // Updates the size of the frame.
-        __update: function () {
+        __update: function (resizing) {
             var width = this.$container.width();
             var height = this.$container.height();
 
@@ -3482,11 +3482,11 @@ define('wcDocker/frame',[
                     left = width - this._size.x / 2;
                 }
 
-                if (this.mouseX) {
+                if (this.mouseX && !resizing) {
                     left = this.mouseX
                 }
 
-                if (left < 0) {
+                if (left < 0 && !resizing) {
                    left = 0;
                 }
 
@@ -20406,7 +20406,7 @@ define('wcDocker/docker',[
                     mouse.y += offset.top;
 
                     self._draggingFrame.__resize(self._draggingFrameSizer, mouse);
-                    self._draggingFrame.__update();
+                    self._draggingFrame.__update(true);
                 } else if (self._draggingCustomTabFrame) {
                     if (self._draggingCustomTabFrame.moveable()) {
                         var $hoverTab = $(event.target).hasClass('wcPanelTab') ? $(event.target) : $(event.target).parents('.wcPanelTab');
