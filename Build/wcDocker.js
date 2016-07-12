@@ -1788,13 +1788,15 @@ define('wcDocker/panel',[
             var w = panelAnchor.x + titleSize;
             var h = height;*/
 
-            var positions = ['left', 'right', 'top'];
+            var positions = ['left', 'right', 'top', 'bottom'];
             var idPanel = this.title().replace(/\s+/g, '');
             for (var i = 0; i < positions.length; i++) {
                 var position = positions[i];
-                var divName = '#dropArea_' + position + '_' + idPanel;
-                var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize);
-                this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName);
+                var divName = 'dropArea_' + position + '_' + idPanel;
+                var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, false);
+                if (coordinates != null) {
+                    this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName);
+                }
             }
         },
 
@@ -1803,53 +1805,63 @@ define('wcDocker/panel',[
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize) {
+        __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize, allowEdges) {
             var offset = this.$container.offset();
             var width  = this.$container.outerWidth();
             var height = this.$container.outerHeight();
+
             switch (position) {
                 case 'left':
                     return {
-                        x: offset.left,
-                        y: offset.top,
-                        w: panelAnchor.x + titleSize,
-                        h: height
+                        x: offset.left + edgeAnchor.x,
+                        y: offset.top + panelAnchor.y,
+                        w: allowEdges ? panelAnchor.x + titleSize - edgeAnchor.x: panelAnchor.x + titleSize,
+                        h: allowEdges? height - panelAnchor.y : height
                     };
                     break;
                 case 'right':
                     return {
                         x: offset.left + width - panelAnchor.x - titleSize,
-                        y: offset.top,
-                        w: panelAnchor.x + titleSize,
-                        h: height
+                        y: offset.top + + panelAnchor.y,
+                        w: allowEdges ? panelAnchor.x + titleSize - edgeAnchor.x : panelAnchor.x + titleSize,
+                        h: allowEdges ? height - panelAnchor.y : height
                     };
                     break;
                 case 'top':
                     return {
-                        
+                        x: offset.left,
+                        y: allowEdges ? offset.top + edgeAnchor.y : offset.top,
+                        w: width,
+                        h: panelAnchor.y + titleSize
                     };
                     break;
                 case 'bottom':
+                    return {
+                        x: offset.left,
+                        y: offset.top + height - panelAnchor.y - titleSize,
+                        w: width,
+                        h: panelAnchor.y + titleSize
+                    };
                     break;
                 default:
                     return null;
                     break;
             }
 
-            return { x: x,
-                    y: y,
-                    w: width,
-                    h: height};
+            return null;
         },
 
         __showDropArea: function(x, y, w, h, id) {
-            var dropArea = $(id);
-            if (dropArea.length == 0) {
-                dropArea = $('<div id="' + id + '" style="background: red; z-index: 19; position: fixed; text-align: right ">DROP HERE</div>')
+            var docker = this.docker();
+            if (!docker.dropableAreas[id]) {
+                var dropArea = $('<div id="' + id + '" ' +
+                    'style="background: red; z-index: 19; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
+                    'DROP HERE</div>')
                     .css('top', y + 'px')
                     .css('left', x + 'px')
                     .css('width', w + 'px')
                     .css('height', h + 'px');
+                docker.dropableAreas[id] = true;
                 $('body').append(dropArea);
             }
         },
@@ -19067,7 +19079,7 @@ define('wcDocker/docker',[
             this._ghost = null;
             this._menuTimer = 0;
             this._mouseOrigin = {x: 0, y: 0};
-
+            this.dropableAreas = {};
             this._resizeData = {
                 time: -1,
                 timeout: false,
@@ -20221,7 +20233,7 @@ define('wcDocker/docker',[
 
             this.off();
         },
-
+        
         showDropableAreas: function () {
             var panels = this.findPanels();
             for(var i = 0; i < panels.length; i++) {
@@ -20337,6 +20349,15 @@ define('wcDocker/docker',[
                 if (mouse.which === 3) {
                     return true;
                 }
+
+                for (var area in this.dropableAreas) {
+                    if (this.dropableAreas.hasOwnProperty(area)) {
+                       var id = '#' + area;
+                       $(id).remove();
+                    }
+                }
+
+
                 $('body').removeClass('wcDisableSelection');
                 if (self._draggingFrame) {
                     for (var i = 0; i < self._frameList.length; ++i) {
@@ -20736,6 +20757,13 @@ define('wcDocker/docker',[
                 var mouse = self.__mouse(event);
                 if (mouse.which !== 2) {
                     return;
+                }
+
+                for (var area in this.dropableAreas) {
+                    if (this.dropableAreas.hasOwnProperty(area)) {
+                        var id = '#' + area;
+                        $(id).remove();
+                    }
                 }
 
                 var index = parseInt($(this).attr('id'));

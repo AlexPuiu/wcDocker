@@ -103,7 +103,7 @@ define([
             this._ghost = null;
             this._menuTimer = 0;
             this._mouseOrigin = {x: 0, y: 0};
-
+            this.dropableAreas = {};
             this._resizeData = {
                 time: -1,
                 timeout: false,
@@ -1257,7 +1257,7 @@ define([
 
             this.off();
         },
-
+        
         showDropableAreas: function () {
             var panels = this.findPanels();
             for(var i = 0; i < panels.length; i++) {
@@ -1373,6 +1373,15 @@ define([
                 if (mouse.which === 3) {
                     return true;
                 }
+
+                for (var area in this.dropableAreas) {
+                    if (this.dropableAreas.hasOwnProperty(area)) {
+                       var id = '#' + area;
+                       $(id).remove();
+                    }
+                }
+
+
                 $('body').removeClass('wcDisableSelection');
                 if (self._draggingFrame) {
                     for (var i = 0; i < self._frameList.length; ++i) {
@@ -1772,6 +1781,13 @@ define([
                 var mouse = self.__mouse(event);
                 if (mouse.which !== 2) {
                     return;
+                }
+
+                for (var area in this.dropableAreas) {
+                    if (this.dropableAreas.hasOwnProperty(area)) {
+                        var id = '#' + area;
+                        $(id).remove();
+                    }
                 }
 
                 var index = parseInt($(this).attr('id'));
