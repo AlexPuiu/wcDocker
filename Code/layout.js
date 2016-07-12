@@ -363,8 +363,6 @@ define([
 
                 // Right side docking
                 if (mouse.x >= offset.left + width - panelAnchor.x - titleSize && mouse.x <= offset.left + width) {
-                    console.log('Right SIDE docking x: ' + (offset.left + width - panelAnchor.x - titleSize));
-                    console.log('Right SIDE docking w: ' + (offset.left + width));
                     ghost.anchor(mouse, {
                         x: offset.left + width * 0.5 - 2,
                         y: offset.top - 2,

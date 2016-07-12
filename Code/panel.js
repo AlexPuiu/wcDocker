@@ -787,7 +787,7 @@ define([
             var w = panelAnchor.x + titleSize;
             var h = height;*/
 
-            var positions = ['left'];
+            var positions = ['left', 'right', 'top'];
             var idPanel = this.title().replace(/\s+/g, '');
             for (var i = 0; i < positions.length; i++) {
                 var position = positions[i];
@@ -816,16 +816,17 @@ define([
                     };
                     break;
                 case 'right':
-                    console.log('calc x: '+ (offset.left + width - panelAnchor.x - titleSize));
-                    console.log('calc w: '+ (offset.left + width));
                     return {
                         x: offset.left + width - panelAnchor.x - titleSize,
                         y: offset.top,
-                        w: offset.left + width,
+                        w: panelAnchor.x + titleSize,
                         h: height
                     };
                     break;
                 case 'top':
+                    return {
+                        
+                    };
                     break;
                 case 'bottom':
                     break;
@@ -843,7 +844,7 @@ define([
         __showDropArea: function(x, y, w, h, id) {
             var dropArea = $(id);
             if (dropArea.length == 0) {
-                dropArea = $('<div id="' + id + '" style="background: red; z-index: 80; position: fixed; text-align: right ">DROP HERE</div>')
+                dropArea = $('<div id="' + id + '" style="background: red; z-index: 19; position: fixed; text-align: right ">DROP HERE</div>')
                     .css('top', y + 'px')
                     .css('left', x + 'px')
                     .css('width', w + 'px')
