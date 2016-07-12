@@ -161,6 +161,8 @@ define([
             return this._options.themePath;
         },
 
+
+
         /**
          * Gets, or Sets the current theme used by docker.
          * @function module:wcDocker#theme
@@ -1254,6 +1256,15 @@ define([
             while (this._splitterList.length) this._splitterList.pop();
 
             this.off();
+        },
+
+        showDropableAreas: function () {
+            var panels = this.findPanels();
+            for(var i = 0; i < panels.length; i++) {
+                if (panels[i].isVisible()) {
+                   // panels[i].showDropableAreas();
+                }
+            }
         },
 
 

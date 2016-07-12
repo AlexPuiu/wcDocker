@@ -95,9 +95,11 @@ define([
         //    allowEdges            Whether to allow edge docking.
         __checkAnchorDrop: function (mouse, same, ghost, canSplit, $elem, title, isTopper, forceTabOrientation, allowEdges) {
             var docker = this._parent.docker();
+            
             var width = $elem.outerWidth();
             var height = $elem.outerHeight();
             var offset = $elem.offset();
+           // console.log('OFFSET: ' + JSON.stringify(offset));
             var titleSize = $elem.find('.wcFrameTitleBar').height();
             if (!title) {
                 titleSize = 0;
@@ -126,6 +128,14 @@ define([
 
             var edgeAnchor = __getAnchorSizes(docker._options.edgeAnchorSize, docker.$container.outerWidth(), docker.$container.outerHeight());
             var panelAnchor = __getAnchorSizes(docker._options.panelAnchorSize, width, height);
+
+            if (!same && this._parent && this._parent.instanceOf('wcPanel')) {
+                var panel = this._parent;
+                panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize);
+                /*setTimeout(function () {
+
+                }, 10);*/
+            }
 
             // If the target panel has a title, hovering over it (on all sides) will cause stacking
             // and also change the orientation of the tabs (if enabled).
@@ -216,6 +226,20 @@ define([
                 // Left edge
                 if (mouse.y >= outerOffset.top && mouse.y <= outerOffset.top + outerHeight &&
                     mouse.x >= outerOffset.left + titleSize && mouse.x <= outerOffset.left + titleSize + edgeAnchor.x) {
+                    console.log('Left EDGE docking');
+                    var x = outerOffset.left;
+                    var y = outerOffset.top;
+                    var w = outerOffset.left + titleSize + edgeAnchor.x;
+                    var h = outerOffset.top + outerHeight;
+                    var drpArea = $('#dropAreaEL');
+                    if (!drpArea.length) {
+                        var dropArea = $('<div id="dropAreaEL" style="background: blue; z-index: 81; position: fixed; text-align: right ">DROP HERE</div>')
+                            .css('top', y + 'px')
+                            .css('left', x + 'px')
+                            .css('width', w + 'px')
+                            .css('height', h + 'px');
+                        $('body').append(dropArea);
+                    }
                     ghost.anchor(mouse, {
                         x: outerOffset.left - 2,
                         y: outerOffset.top - 2,
@@ -324,6 +348,7 @@ define([
             // Left side docking
             if (mouse.y >= offset.top && mouse.y <= offset.top + height) {
                 if (mouse.x >= offset.left && mouse.x <= offset.left + panelAnchor.x + titleSize) {
+                    console.log('Left SIDE docking ');
                     ghost.anchor(mouse, {
                         x: offset.left - 2,
                         y: offset.top - 2,
@@ -338,6 +363,8 @@ define([
 
                 // Right side docking
                 if (mouse.x >= offset.left + width - panelAnchor.x - titleSize && mouse.x <= offset.left + width) {
+                    console.log('Right SIDE docking x: ' + (offset.left + width - panelAnchor.x - titleSize));
+                    console.log('Right SIDE docking w: ' + (offset.left + width));
                     ghost.anchor(mouse, {
                         x: offset.left + width * 0.5 - 2,
                         y: offset.top - 2,

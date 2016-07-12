@@ -1780,11 +1780,78 @@ define('wcDocker/panel',[
             }
             return [];
         },
+        
+        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize) {
+            /*var offset = this.$container.offset();
+            var x = offset.left;
+            var y = offset.top;
+            var w = panelAnchor.x + titleSize;
+            var h = height;*/
+
+            var positions = ['left'];
+            var idPanel = this.title().replace(/\s+/g, '');
+            for (var i = 0; i < positions.length; i++) {
+                var position = positions[i];
+                var divName = '#dropArea_' + position + '_' + idPanel;
+                var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize);
+                this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName);
+            }
+        },
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize) {
+            var offset = this.$container.offset();
+            var width  = this.$container.outerWidth();
+            var height = this.$container.outerHeight();
+            switch (position) {
+                case 'left':
+                    return {
+                        x: offset.left,
+                        y: offset.top,
+                        w: panelAnchor.x + titleSize,
+                        h: height
+                    };
+                    break;
+                case 'right':
+                    console.log('calc x: '+ (offset.left + width - panelAnchor.x - titleSize));
+                    console.log('calc w: '+ (offset.left + width));
+                    return {
+                        x: offset.left + width - panelAnchor.x - titleSize,
+                        y: offset.top,
+                        w: offset.left + width,
+                        h: height
+                    };
+                    break;
+                case 'top':
+                    break;
+                case 'bottom':
+                    break;
+                default:
+                    return null;
+                    break;
+            }
+
+            return { x: x,
+                    y: y,
+                    w: width,
+                    h: height};
+        },
+
+        __showDropArea: function(x, y, w, h, id) {
+            var dropArea = $(id);
+            if (dropArea.length == 0) {
+                dropArea = $('<div id="' + id + '" style="background: red; z-index: 80; position: fixed; text-align: right ">DROP HERE</div>')
+                    .css('top', y + 'px')
+                    .css('left', x + 'px')
+                    .css('width', w + 'px')
+                    .css('height', h + 'px');
+                $('body').append(dropArea);
+            }
+        },
 
         // Initialize
         __init: function () {
@@ -4861,9 +4928,11 @@ define('wcDocker/layout',[
         //    allowEdges            Whether to allow edge docking.
         __checkAnchorDrop: function (mouse, same, ghost, canSplit, $elem, title, isTopper, forceTabOrientation, allowEdges) {
             var docker = this._parent.docker();
+            
             var width = $elem.outerWidth();
             var height = $elem.outerHeight();
             var offset = $elem.offset();
+           // console.log('OFFSET: ' + JSON.stringify(offset));
             var titleSize = $elem.find('.wcFrameTitleBar').height();
             if (!title) {
                 titleSize = 0;
@@ -4892,6 +4961,14 @@ define('wcDocker/layout',[
 
             var edgeAnchor = __getAnchorSizes(docker._options.edgeAnchorSize, docker.$container.outerWidth(), docker.$container.outerHeight());
             var panelAnchor = __getAnchorSizes(docker._options.panelAnchorSize, width, height);
+
+            if (!same && this._parent && this._parent.instanceOf('wcPanel')) {
+                var panel = this._parent;
+                panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize);
+                /*setTimeout(function () {
+
+                }, 10);*/
+            }
 
             // If the target panel has a title, hovering over it (on all sides) will cause stacking
             // and also change the orientation of the tabs (if enabled).
@@ -4982,6 +5059,20 @@ define('wcDocker/layout',[
                 // Left edge
                 if (mouse.y >= outerOffset.top && mouse.y <= outerOffset.top + outerHeight &&
                     mouse.x >= outerOffset.left + titleSize && mouse.x <= outerOffset.left + titleSize + edgeAnchor.x) {
+                    console.log('Left EDGE docking');
+                    var x = outerOffset.left;
+                    var y = outerOffset.top;
+                    var w = outerOffset.left + titleSize + edgeAnchor.x;
+                    var h = outerOffset.top + outerHeight;
+                    var drpArea = $('#dropAreaEL');
+                    if (!drpArea.length) {
+                        var dropArea = $('<div id="dropAreaEL" style="background: blue; z-index: 81; position: fixed; text-align: right ">DROP HERE</div>')
+                            .css('top', y + 'px')
+                            .css('left', x + 'px')
+                            .css('width', w + 'px')
+                            .css('height', h + 'px');
+                        $('body').append(dropArea);
+                    }
                     ghost.anchor(mouse, {
                         x: outerOffset.left - 2,
                         y: outerOffset.top - 2,
@@ -5090,6 +5181,7 @@ define('wcDocker/layout',[
             // Left side docking
             if (mouse.y >= offset.top && mouse.y <= offset.top + height) {
                 if (mouse.x >= offset.left && mouse.x <= offset.left + panelAnchor.x + titleSize) {
+                    console.log('Left SIDE docking ');
                     ghost.anchor(mouse, {
                         x: offset.left - 2,
                         y: offset.top - 2,
@@ -5104,6 +5196,8 @@ define('wcDocker/layout',[
 
                 // Right side docking
                 if (mouse.x >= offset.left + width - panelAnchor.x - titleSize && mouse.x <= offset.left + width) {
+                    console.log('Right SIDE docking x: ' + (offset.left + width - panelAnchor.x - titleSize));
+                    console.log('Right SIDE docking w: ' + (offset.left + width));
                     ghost.anchor(mouse, {
                         x: offset.left + width * 0.5 - 2,
                         y: offset.top - 2,
@@ -19032,6 +19126,8 @@ define('wcDocker/docker',[
             return this._options.themePath;
         },
 
+
+
         /**
          * Gets, or Sets the current theme used by docker.
          * @function module:wcDocker#theme
@@ -20125,6 +20221,15 @@ define('wcDocker/docker',[
             while (this._splitterList.length) this._splitterList.pop();
 
             this.off();
+        },
+
+        showDropableAreas: function () {
+            var panels = this.findPanels();
+            for(var i = 0; i < panels.length; i++) {
+                if (panels[i].isVisible()) {
+                   // panels[i].showDropableAreas();
+                }
+            }
         },
 
 

@@ -779,11 +779,78 @@ define([
             }
             return [];
         },
+        
+        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize) {
+            /*var offset = this.$container.offset();
+            var x = offset.left;
+            var y = offset.top;
+            var w = panelAnchor.x + titleSize;
+            var h = height;*/
+
+            var positions = ['left'];
+            var idPanel = this.title().replace(/\s+/g, '');
+            for (var i = 0; i < positions.length; i++) {
+                var position = positions[i];
+                var divName = '#dropArea_' + position + '_' + idPanel;
+                var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize);
+                this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName);
+            }
+        },
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize) {
+            var offset = this.$container.offset();
+            var width  = this.$container.outerWidth();
+            var height = this.$container.outerHeight();
+            switch (position) {
+                case 'left':
+                    return {
+                        x: offset.left,
+                        y: offset.top,
+                        w: panelAnchor.x + titleSize,
+                        h: height
+                    };
+                    break;
+                case 'right':
+                    console.log('calc x: '+ (offset.left + width - panelAnchor.x - titleSize));
+                    console.log('calc w: '+ (offset.left + width));
+                    return {
+                        x: offset.left + width - panelAnchor.x - titleSize,
+                        y: offset.top,
+                        w: offset.left + width,
+                        h: height
+                    };
+                    break;
+                case 'top':
+                    break;
+                case 'bottom':
+                    break;
+                default:
+                    return null;
+                    break;
+            }
+
+            return { x: x,
+                    y: y,
+                    w: width,
+                    h: height};
+        },
+
+        __showDropArea: function(x, y, w, h, id) {
+            var dropArea = $(id);
+            if (dropArea.length == 0) {
+                dropArea = $('<div id="' + id + '" style="background: red; z-index: 80; position: fixed; text-align: right ">DROP HERE</div>')
+                    .css('top', y + 'px')
+                    .css('left', x + 'px')
+                    .css('width', w + 'px')
+                    .css('height', h + 'px');
+                $('body').append(dropArea);
+            }
+        },
 
         // Initialize
         __init: function () {
