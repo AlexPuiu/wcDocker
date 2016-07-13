@@ -105,7 +105,7 @@ define([
             this._mouseOrigin = {x: 0, y: 0};
             this.dropableAreas = {};
             this.dropPositions = ['left', 'right', 'top', 'bottom'];
-
+            this.dropableEdgeAreas = {};
             this._resizeData = {
                 time: -1,
                 timeout: false,
@@ -1373,10 +1373,10 @@ define([
 
             for (var i = 0; i < this.dropPositions.length; i++) {
                 var id = 'dropAreaEdge_' +   this.dropPositions[i];
-                this.dropableAreas[id] = $('<div id="' + id + '" ' +
+                this.dropableEdgeAreas[id] = $('<div id="' + id + '" ' +
                     'style="background: blue; z-index: 20; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
                     'DROP HERE</div>').css('display', 'none');
-                $('body').append(this.dropableAreas[id]);
+                $('body').append(this.dropableEdgeAreas[id]);
             }
 
             // on mousedown
@@ -1397,6 +1397,13 @@ define([
                     if (self.dropableAreas.hasOwnProperty(area)) {
                        var id = '#' + area;
                         self.dropableAreas[area].css('display', 'none');
+                    }
+                }
+
+                for (var area in self.dropableEdgeAreas) {
+                    if (self.dropableEdgeAreas.hasOwnProperty(area)) {
+                        var id = '#' + area;
+                        self.dropableEdgeAreas[area].css('display', 'none');
                     }
                 }
 

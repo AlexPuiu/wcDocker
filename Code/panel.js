@@ -780,21 +780,29 @@ define([
             return [];
         },
         
-        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize) {
+        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost) {
             /*var offset = this.$container.offset();
             var x = offset.left;
             var y = offset.top;
             var w = panelAnchor.x + titleSize;
             var h = height;*/
-
-            var positions = ['left', 'right', 'top', 'bottom'];
+            var docker = this.docker();
             var idPanel = this.title().replace(/\s+/g, '');
-            for (var i = 0; i < positions.length; i++) {
-                var position = positions[i];
+            for (var i = 0; i < docker.dropPositions.length; i++) {
+                var position = docker.dropPositions[i];
                 var divName = 'dropArea_' + position + '_' + idPanel;
                 var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, false);
                 if (coordinates != null) {
-                    this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName);
+                    this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName, docker.dropableAreas);
+                }
+            }
+            var positions = ['left', 'right', 'top', 'bottom'];
+            for (var i = 0; i < positions.length; i++) {
+                var position = positions[i];
+                var divName = 'dropAreaEdge_' + position;
+                var edgeCoordinates = this.__getEdgeDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, ghost);
+                if (coordinates != null) {
+                    this.__showDropArea(edgeCoordinates.x, edgeCoordinates.y, edgeCoordinates.w, edgeCoordinates.h, divName, docker.dropableEdgeAreas);
                 }
             }
         },
@@ -803,6 +811,51 @@ define([
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        __getEdgeDropAreaCoordinates: function (position, edgeAnchor,panelAnchor, width, height, titleSize, ghost) {
+            var outerWidth = ghost._outer.$container.outerWidth();
+            var outerHeight = ghost._outer.$container.outerHeight();
+            var outerOffset = ghost._outer.$container.offset();
+
+            switch (position) {
+                case 'left':
+                    return {
+                        x: outerOffset.left,
+                        y: outerOffset.top ,
+                        w: outerOffset.left + titleSize + edgeAnchor.x,
+                        h: outerOffset.top + outerHeight
+                    };
+                    break;
+                case 'right':
+                    return {
+                        x: outerOffset.left + outerWidth - edgeAnchor.x - titleSize,
+                        y: outerOffset.top,
+                        w: edgeAnchor.x + titleSize,
+                        h: outerOffset.top + outerHeight
+                    };
+                    break;
+                case 'top':
+                    return {
+                        x: outerOffset.left,
+                        y: 60 + titleSize,  //60 - top navigation bar
+                        w: outerOffset.left + outerWidth,
+                        h: outerOffset.top + edgeAnchor.y - 60
+                    };
+                    break;
+                case 'bottom':
+                    return {
+                        x: outerOffset.left,
+                        y: outerOffset.top + outerHeight - titleSize - edgeAnchor.y,
+                        w: outerOffset.left + outerWidth,
+                        h: outerOffset.top + outerHeight - titleSize
+                    };
+                    break;
+                default:
+                    return null;
+                    break;
+            }
+
+            return null;
+        },
 
         __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize, allowEdges) {
             var offset = this.$container.offset();
@@ -850,9 +903,9 @@ define([
             return null;
         },
 
-        __showDropArea: function(x, y, w, h, id) {
+        __showDropArea: function(x, y, w, h, id, areas) {
             var docker = this.docker();
-            var dropableArea = docker.dropableAreas[id];
+            var dropableArea = areas[id];
             if (dropableArea && dropableArea.css('display') == 'none') {
                 dropableArea
                     .css('top', y + 'px')

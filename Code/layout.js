@@ -133,7 +133,7 @@ define([
                 var panel = this._parent;
                 if(panel.isVisible()) {
                     setTimeout(function () {
-                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize);
+                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost);
                      }, 1);
                 }
 
@@ -233,7 +233,7 @@ define([
                     var y = outerOffset.top;
                     var w = outerOffset.left + titleSize + edgeAnchor.x;
                     var h = outerOffset.top + outerHeight;
-                    var drpArea = $('#dropAreaEL');
+                    /*var drpArea = $('#dropAreaEL');
                     if (!drpArea.length) {
                         var dropArea = $('<div id="dropAreaEL" style="background: blue; z-index: 81; position: fixed; text-align: right ">DROP HERE</div>')
                             .css('top', y + 'px')
@@ -241,7 +241,7 @@ define([
                             .css('width', w + 'px')
                             .css('height', h + 'px');
                         $('body').append(dropArea);
-                    }
+                    }*/
                     ghost.anchor(mouse, {
                         x: outerOffset.left - 2,
                         y: outerOffset.top - 2,

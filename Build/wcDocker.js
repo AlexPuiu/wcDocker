@@ -1781,21 +1781,29 @@ define('wcDocker/panel',[
             return [];
         },
         
-        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize) {
+        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost) {
             /*var offset = this.$container.offset();
             var x = offset.left;
             var y = offset.top;
             var w = panelAnchor.x + titleSize;
             var h = height;*/
-
-            var positions = ['left', 'right', 'top', 'bottom'];
+            var docker = this.docker();
             var idPanel = this.title().replace(/\s+/g, '');
-            for (var i = 0; i < positions.length; i++) {
-                var position = positions[i];
+            for (var i = 0; i < docker.dropPositions.length; i++) {
+                var position = docker.dropPositions[i];
                 var divName = 'dropArea_' + position + '_' + idPanel;
                 var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, false);
                 if (coordinates != null) {
-                    this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName);
+                    this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName, docker.dropableAreas);
+                }
+            }
+            var positions = ['left', 'right', 'top', 'bottom'];
+            for (var i = 0; i < positions.length; i++) {
+                var position = positions[i];
+                var divName = 'dropAreaEdge_' + position;
+                var edgeCoordinates = this.__getEdgeDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, ghost);
+                if (coordinates != null) {
+                    this.__showDropArea(edgeCoordinates.x, edgeCoordinates.y, edgeCoordinates.w, edgeCoordinates.h, divName, docker.dropableEdgeAreas);
                 }
             }
         },
@@ -1804,6 +1812,51 @@ define('wcDocker/panel',[
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        __getEdgeDropAreaCoordinates: function (position, edgeAnchor,panelAnchor, width, height, titleSize, ghost) {
+            var outerWidth = ghost._outer.$container.outerWidth();
+            var outerHeight = ghost._outer.$container.outerHeight();
+            var outerOffset = ghost._outer.$container.offset();
+
+            switch (position) {
+                case 'left':
+                    return {
+                        x: outerOffset.left,
+                        y: outerOffset.top ,
+                        w: outerOffset.left + titleSize + edgeAnchor.x,
+                        h: outerOffset.top + outerHeight
+                    };
+                    break;
+                case 'right':
+                    return {
+                        x: outerOffset.left + outerWidth - edgeAnchor.x - titleSize,
+                        y: outerOffset.top,
+                        w: edgeAnchor.x + titleSize,
+                        h: outerOffset.top + outerHeight
+                    };
+                    break;
+                case 'top':
+                    return {
+                        x: outerOffset.left,
+                        y: 60 + titleSize,  //60 - top navigation bar
+                        w: outerOffset.left + outerWidth,
+                        h: outerOffset.top + edgeAnchor.y - 60
+                    };
+                    break;
+                case 'bottom':
+                    return {
+                        x: outerOffset.left,
+                        y: outerOffset.top + outerHeight - titleSize - edgeAnchor.y,
+                        w: outerOffset.left + outerWidth,
+                        h: outerOffset.top + outerHeight - titleSize
+                    };
+                    break;
+                default:
+                    return null;
+                    break;
+            }
+
+            return null;
+        },
 
         __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize, allowEdges) {
             var offset = this.$container.offset();
@@ -1814,7 +1867,7 @@ define('wcDocker/panel',[
                 case 'left':
                     return {
                         x: offset.left,
-                        y: offset.top,
+                        y: offset.top ,
                         w: allowEdges ? panelAnchor.x + titleSize - edgeAnchor.x: panelAnchor.x + titleSize,
                         h: allowEdges? height - panelAnchor.y : height
                     };
@@ -1851,9 +1904,9 @@ define('wcDocker/panel',[
             return null;
         },
 
-        __showDropArea: function(x, y, w, h, id) {
+        __showDropArea: function(x, y, w, h, id, areas) {
             var docker = this.docker();
-            var dropableArea = docker.dropableAreas[id];
+            var dropableArea = areas[id];
             if (dropableArea && dropableArea.css('display') == 'none') {
                 dropableArea
                     .css('top', y + 'px')
@@ -4977,7 +5030,7 @@ define('wcDocker/layout',[
                 var panel = this._parent;
                 if(panel.isVisible()) {
                     setTimeout(function () {
-                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize);
+                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost);
                      }, 1);
                 }
 
@@ -5077,7 +5130,7 @@ define('wcDocker/layout',[
                     var y = outerOffset.top;
                     var w = outerOffset.left + titleSize + edgeAnchor.x;
                     var h = outerOffset.top + outerHeight;
-                    var drpArea = $('#dropAreaEL');
+                    /*var drpArea = $('#dropAreaEL');
                     if (!drpArea.length) {
                         var dropArea = $('<div id="dropAreaEL" style="background: blue; z-index: 81; position: fixed; text-align: right ">DROP HERE</div>')
                             .css('top', y + 'px')
@@ -5085,7 +5138,7 @@ define('wcDocker/layout',[
                             .css('width', w + 'px')
                             .css('height', h + 'px');
                         $('body').append(dropArea);
-                    }
+                    }*/
                     ghost.anchor(mouse, {
                         x: outerOffset.left - 2,
                         y: outerOffset.top - 2,
@@ -19081,7 +19134,7 @@ define('wcDocker/docker',[
             this._mouseOrigin = {x: 0, y: 0};
             this.dropableAreas = {};
             this.dropPositions = ['left', 'right', 'top', 'bottom'];
-
+            this.dropableEdgeAreas = {};
             this._resizeData = {
                 time: -1,
                 timeout: false,
@@ -20349,10 +20402,10 @@ define('wcDocker/docker',[
 
             for (var i = 0; i < this.dropPositions.length; i++) {
                 var id = 'dropAreaEdge_' +   this.dropPositions[i];
-                this.dropableAreas[id] = $('<div id="' + id + '" ' +
-                    'style="background: blue; z-index: 19; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
+                this.dropableEdgeAreas[id] = $('<div id="' + id + '" ' +
+                    'style="background: blue; z-index: 20; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
                     'DROP HERE</div>').css('display', 'none');
-                $('body').append(this.dropableAreas[id]);
+                $('body').append(this.dropableEdgeAreas[id]);
             }
 
             // on mousedown
@@ -20373,6 +20426,13 @@ define('wcDocker/docker',[
                     if (self.dropableAreas.hasOwnProperty(area)) {
                        var id = '#' + area;
                         self.dropableAreas[area].css('display', 'none');
+                    }
+                }
+
+                for (var area in self.dropableEdgeAreas) {
+                    if (self.dropableEdgeAreas.hasOwnProperty(area)) {
+                        var id = '#' + area;
+                        self.dropableEdgeAreas[area].css('display', 'none');
                     }
                 }
 
