@@ -104,6 +104,8 @@ define([
             this._menuTimer = 0;
             this._mouseOrigin = {x: 0, y: 0};
             this.dropableAreas = {};
+            this.dropPositions = ['left', 'right', 'top', 'bottom'];
+
             this._resizeData = {
                 time: -1,
                 timeout: false,
@@ -242,6 +244,16 @@ define([
                 name: name,
                 options: options
             });
+
+            var positions = ['left', 'right', 'top', 'bottom'];
+            var idPanel = options.title.replace(/\s+/g, '');
+            for (var i = 0; i < positions.length; i++) {
+                var id = 'dropArea_' +   positions[i] + '_' + idPanel;
+                this.dropableAreas[id] = $('<div id="' + id + '" ' +
+                    'style="background: red; z-index: 19; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
+                    'DROP HERE</div>').css('display', 'none');
+                $('body').append(this.dropableAreas[id]);
+            }
 
             var $menu = $('menu').find('menu');
             $menu.append($('<menuitem label="' + name + '">'));
@@ -1374,10 +1386,10 @@ define([
                     return true;
                 }
 
-                for (var area in this.dropableAreas) {
-                    if (this.dropableAreas.hasOwnProperty(area)) {
+                for (var area in self.dropableAreas) {
+                    if (self.dropableAreas.hasOwnProperty(area)) {
                        var id = '#' + area;
-                       $(id).remove();
+                        self.dropableAreas[area].css('display', 'none');
                     }
                 }
 
@@ -1781,13 +1793,6 @@ define([
                 var mouse = self.__mouse(event);
                 if (mouse.which !== 2) {
                     return;
-                }
-
-                for (var area in this.dropableAreas) {
-                    if (this.dropableAreas.hasOwnProperty(area)) {
-                        var id = '#' + area;
-                        $(id).remove();
-                    }
                 }
 
                 var index = parseInt($(this).attr('id'));

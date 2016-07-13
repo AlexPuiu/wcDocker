@@ -131,7 +131,9 @@ define([
 
             if (!same && this._parent && this._parent.instanceOf('wcPanel')) {
                 var panel = this._parent;
-                panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize);
+                if(panel.isVisible()) {
+                    panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize);
+                }
                 /*setTimeout(function () {
 
                 }, 10);*/

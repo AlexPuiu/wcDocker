@@ -812,8 +812,8 @@ define([
             switch (position) {
                 case 'left':
                     return {
-                        x: offset.left + edgeAnchor.x,
-                        y: offset.top + panelAnchor.y,
+                        x: offset.left,
+                        y: offset.top,
                         w: allowEdges ? panelAnchor.x + titleSize - edgeAnchor.x: panelAnchor.x + titleSize,
                         h: allowEdges? height - panelAnchor.y : height
                     };
@@ -821,7 +821,7 @@ define([
                 case 'right':
                     return {
                         x: offset.left + width - panelAnchor.x - titleSize,
-                        y: offset.top + + panelAnchor.y,
+                        y: offset.top,
                         w: allowEdges ? panelAnchor.x + titleSize - edgeAnchor.x : panelAnchor.x + titleSize,
                         h: allowEdges ? height - panelAnchor.y : height
                     };
@@ -852,16 +852,14 @@ define([
 
         __showDropArea: function(x, y, w, h, id) {
             var docker = this.docker();
-            if (!docker.dropableAreas[id]) {
-                var dropArea = $('<div id="' + id + '" ' +
-                    'style="background: red; z-index: 19; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
-                    'DROP HERE</div>')
+            var dropableArea = docker.dropableAreas[id];
+            if (dropableArea && dropableArea.css('display') == 'none') {
+                dropableArea
                     .css('top', y + 'px')
                     .css('left', x + 'px')
                     .css('width', w + 'px')
-                    .css('height', h + 'px');
-                docker.dropableAreas[id] = true;
-                $('body').append(dropArea);
+                    .css('height', h + 'px')
+                    .css('display', '');
             }
         },
 

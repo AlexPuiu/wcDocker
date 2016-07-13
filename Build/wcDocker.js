@@ -1813,8 +1813,8 @@ define('wcDocker/panel',[
             switch (position) {
                 case 'left':
                     return {
-                        x: offset.left + edgeAnchor.x,
-                        y: offset.top + panelAnchor.y,
+                        x: offset.left,
+                        y: offset.top,
                         w: allowEdges ? panelAnchor.x + titleSize - edgeAnchor.x: panelAnchor.x + titleSize,
                         h: allowEdges? height - panelAnchor.y : height
                     };
@@ -1822,7 +1822,7 @@ define('wcDocker/panel',[
                 case 'right':
                     return {
                         x: offset.left + width - panelAnchor.x - titleSize,
-                        y: offset.top + + panelAnchor.y,
+                        y: offset.top,
                         w: allowEdges ? panelAnchor.x + titleSize - edgeAnchor.x : panelAnchor.x + titleSize,
                         h: allowEdges ? height - panelAnchor.y : height
                     };
@@ -1853,16 +1853,14 @@ define('wcDocker/panel',[
 
         __showDropArea: function(x, y, w, h, id) {
             var docker = this.docker();
-            if (!docker.dropableAreas[id]) {
-                var dropArea = $('<div id="' + id + '" ' +
-                    'style="background: red; z-index: 19; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
-                    'DROP HERE</div>')
+            var dropableArea = docker.dropableAreas[id];
+            if (dropableArea && dropableArea.css('display') == 'none') {
+                dropableArea
                     .css('top', y + 'px')
                     .css('left', x + 'px')
                     .css('width', w + 'px')
-                    .css('height', h + 'px');
-                docker.dropableAreas[id] = true;
-                $('body').append(dropArea);
+                    .css('height', h + 'px')
+                    .css('display', '');
             }
         },
 
@@ -4977,7 +4975,9 @@ define('wcDocker/layout',[
 
             if (!same && this._parent && this._parent.instanceOf('wcPanel')) {
                 var panel = this._parent;
-                panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize);
+                if(panel.isVisible()) {
+                    panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize);
+                }
                 /*setTimeout(function () {
 
                 }, 10);*/
@@ -19080,6 +19080,8 @@ define('wcDocker/docker',[
             this._menuTimer = 0;
             this._mouseOrigin = {x: 0, y: 0};
             this.dropableAreas = {};
+            this.dropPositions = ['left', 'right', 'top', 'bottom'];
+
             this._resizeData = {
                 time: -1,
                 timeout: false,
@@ -19218,6 +19220,16 @@ define('wcDocker/docker',[
                 name: name,
                 options: options
             });
+
+            var positions = ['left', 'right', 'top', 'bottom'];
+            var idPanel = options.title.replace(/\s+/g, '');
+            for (var i = 0; i < positions.length; i++) {
+                var id = 'dropArea_' +   positions[i] + '_' + idPanel;
+                this.dropableAreas[id] = $('<div id="' + id + '" ' +
+                    'style="background: red; z-index: 19; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
+                    'DROP HERE</div>').css('display', 'none');
+                $('body').append(this.dropableAreas[id]);
+            }
 
             var $menu = $('menu').find('menu');
             $menu.append($('<menuitem label="' + name + '">'));
@@ -20350,10 +20362,10 @@ define('wcDocker/docker',[
                     return true;
                 }
 
-                for (var area in this.dropableAreas) {
-                    if (this.dropableAreas.hasOwnProperty(area)) {
+                for (var area in self.dropableAreas) {
+                    if (self.dropableAreas.hasOwnProperty(area)) {
                        var id = '#' + area;
-                       $(id).remove();
+                        self.dropableAreas[area].css('display', 'none');
                     }
                 }
 
@@ -20757,13 +20769,6 @@ define('wcDocker/docker',[
                 var mouse = self.__mouse(event);
                 if (mouse.which !== 2) {
                     return;
-                }
-
-                for (var area in this.dropableAreas) {
-                    if (this.dropableAreas.hasOwnProperty(area)) {
-                        var id = '#' + area;
-                        $(id).remove();
-                    }
                 }
 
                 var index = parseInt($(this).attr('id'));
