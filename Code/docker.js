@@ -245,10 +245,9 @@ define([
                 options: options
             });
 
-            var positions = ['left', 'right', 'top', 'bottom'];
             var idPanel = options.title.replace(/\s+/g, '');
-            for (var i = 0; i < positions.length; i++) {
-                var id = 'dropArea_' +   positions[i] + '_' + idPanel;
+            for (var i = 0; i < this.dropPositions.length; i++) {
+                var id = 'dropArea_' +   this.dropPositions[i] + '_' + idPanel;
                 this.dropableAreas[id] = $('<div id="' + id + '" ' +
                     'style="background: red; z-index: 19; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
                     'DROP HERE</div>').css('display', 'none');
@@ -1371,6 +1370,14 @@ define([
 
             // Escape key to cancel drag operations.
             $('body').on('keyup', __onKeyup);
+
+            for (var i = 0; i < this.dropPositions.length; i++) {
+                var id = 'dropAreaEdge_' +   this.dropPositions[i];
+                this.dropableAreas[id] = $('<div id="' + id + '" ' +
+                    'style="background: blue; z-index: 20; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
+                    'DROP HERE</div>').css('display', 'none');
+                $('body').append(this.dropableAreas[id]);
+            }
 
             // on mousedown
             function __onMouseDown(event) {

@@ -813,7 +813,7 @@ define([
                 case 'left':
                     return {
                         x: offset.left,
-                        y: offset.top,
+                        y: offset.top ,
                         w: allowEdges ? panelAnchor.x + titleSize - edgeAnchor.x: panelAnchor.x + titleSize,
                         h: allowEdges? height - panelAnchor.y : height
                     };

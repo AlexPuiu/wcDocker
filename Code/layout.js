@@ -132,11 +132,11 @@ define([
             if (!same && this._parent && this._parent.instanceOf('wcPanel')) {
                 var panel = this._parent;
                 if(panel.isVisible()) {
-                    panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize);
+                    setTimeout(function () {
+                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize);
+                     }, 1);
                 }
-                /*setTimeout(function () {
 
-                }, 10);*/
             }
 
             // If the target panel has a title, hovering over it (on all sides) will cause stacking

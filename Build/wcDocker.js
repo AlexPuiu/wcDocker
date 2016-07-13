@@ -4976,11 +4976,11 @@ define('wcDocker/layout',[
             if (!same && this._parent && this._parent.instanceOf('wcPanel')) {
                 var panel = this._parent;
                 if(panel.isVisible()) {
-                    panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize);
+                    setTimeout(function () {
+                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize);
+                     }, 1);
                 }
-                /*setTimeout(function () {
 
-                }, 10);*/
             }
 
             // If the target panel has a title, hovering over it (on all sides) will cause stacking
@@ -19221,10 +19221,9 @@ define('wcDocker/docker',[
                 options: options
             });
 
-            var positions = ['left', 'right', 'top', 'bottom'];
             var idPanel = options.title.replace(/\s+/g, '');
-            for (var i = 0; i < positions.length; i++) {
-                var id = 'dropArea_' +   positions[i] + '_' + idPanel;
+            for (var i = 0; i < this.dropPositions.length; i++) {
+                var id = 'dropArea_' +   this.dropPositions[i] + '_' + idPanel;
                 this.dropableAreas[id] = $('<div id="' + id + '" ' +
                     'style="background: red; z-index: 19; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
                     'DROP HERE</div>').css('display', 'none');
@@ -20347,6 +20346,14 @@ define('wcDocker/docker',[
 
             // Escape key to cancel drag operations.
             $('body').on('keyup', __onKeyup);
+
+            for (var i = 0; i < this.dropPositions.length; i++) {
+                var id = 'dropAreaEdge_' +   this.dropPositions[i];
+                this.dropableAreas[id] = $('<div id="' + id + '" ' +
+                    'style="background: blue; z-index: 19; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
+                    'DROP HERE</div>').css('display', 'none');
+                $('body').append(this.dropableAreas[id]);
+            }
 
             // on mousedown
             function __onMouseDown(event) {
