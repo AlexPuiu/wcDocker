@@ -1782,11 +1782,6 @@ define('wcDocker/panel',[
         },
         
         showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost) {
-            /*var offset = this.$container.offset();
-            var x = offset.left;
-            var y = offset.top;
-            var w = panelAnchor.x + titleSize;
-            var h = height;*/
             var docker = this.docker();
             var idPanel = this.title().replace(/\s+/g, '');
             for (var i = 0; i < docker.dropPositions.length; i++) {
@@ -1796,23 +1791,14 @@ define('wcDocker/panel',[
                 if (coordinates != null) {
                     this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName, docker.dropableAreas);
                 }
-            }
-            var positions = ['left', 'right', 'top', 'bottom'];
-            for (var i = 0; i < positions.length; i++) {
-                var position = positions[i];
                 var divName = 'dropAreaEdge_' + position;
                 var edgeCoordinates = this.__getEdgeDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, ghost);
-                if (coordinates != null) {
+                if (edgeCoordinates != null) {
                     this.__showDropArea(edgeCoordinates.x, edgeCoordinates.y, edgeCoordinates.w, edgeCoordinates.h, divName, docker.dropableEdgeAreas);
                 }
-            }
-
-            var positions2 = ['left', 'right', 'bottom'];
-            for (var i = 0; i < positions2.length; i++) {
-                var position = positions2[i];
                 var divName = 'dropAreaTab_' + position + '_' + idPanel;
                 var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize);
-                if (coordinates != null) {
+                if (tabCoodrinates != null) {
                     this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divName, docker.dropableTabAreas);
                 }
             }
@@ -19335,7 +19321,6 @@ define('wcDocker/docker',[
                     'style="background: yellow; z-index: 21; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
                     'DROP HERE</div>').css('display', 'none');
                 $('body').append(this.dropableTabAreas[idTabArea]);
-
             }
 
             var $menu = $('menu').find('menu');
@@ -20490,7 +20475,12 @@ define('wcDocker/docker',[
                         self.dropableEdgeAreas[area].css('display', 'none');
                     }
                 }
-
+                for (var area in self.dropableTabAreas) {
+                    if (self.dropableTabAreas.hasOwnProperty(area)) {
+                        var id = '#' + area;
+                        self.dropableTabAreas[area].css('display', 'none');
+                    }
+                }
 
                 $('body').removeClass('wcDisableSelection');
                 if (self._draggingFrame) {

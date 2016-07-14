@@ -781,11 +781,6 @@ define([
         },
         
         showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost) {
-            /*var offset = this.$container.offset();
-            var x = offset.left;
-            var y = offset.top;
-            var w = panelAnchor.x + titleSize;
-            var h = height;*/
             var docker = this.docker();
             var idPanel = this.title().replace(/\s+/g, '');
             for (var i = 0; i < docker.dropPositions.length; i++) {
@@ -795,23 +790,14 @@ define([
                 if (coordinates != null) {
                     this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName, docker.dropableAreas);
                 }
-            }
-            var positions = ['left', 'right', 'top', 'bottom'];
-            for (var i = 0; i < positions.length; i++) {
-                var position = positions[i];
                 var divName = 'dropAreaEdge_' + position;
                 var edgeCoordinates = this.__getEdgeDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, ghost);
-                if (coordinates != null) {
+                if (edgeCoordinates != null) {
                     this.__showDropArea(edgeCoordinates.x, edgeCoordinates.y, edgeCoordinates.w, edgeCoordinates.h, divName, docker.dropableEdgeAreas);
                 }
-            }
-
-            var positions2 = ['left', 'right', 'bottom'];
-            for (var i = 0; i < positions2.length; i++) {
-                var position = positions2[i];
                 var divName = 'dropAreaTab_' + position + '_' + idPanel;
                 var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize);
-                if (coordinates != null) {
+                if (tabCoodrinates != null) {
                     this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divName, docker.dropableTabAreas);
                 }
             }

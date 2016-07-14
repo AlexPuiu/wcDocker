@@ -259,7 +259,6 @@ define([
                     'style="background: yellow; z-index: 21; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
                     'DROP HERE</div>').css('display', 'none');
                 $('body').append(this.dropableTabAreas[idTabArea]);
-
             }
 
             var $menu = $('menu').find('menu');
@@ -1414,7 +1413,12 @@ define([
                         self.dropableEdgeAreas[area].css('display', 'none');
                     }
                 }
-
+                for (var area in self.dropableTabAreas) {
+                    if (self.dropableTabAreas.hasOwnProperty(area)) {
+                        var id = '#' + area;
+                        self.dropableTabAreas[area].css('display', 'none');
+                    }
+                }
 
                 $('body').removeClass('wcDisableSelection');
                 if (self._draggingFrame) {
