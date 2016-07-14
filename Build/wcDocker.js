@@ -1821,7 +1821,7 @@ define('wcDocker/panel',[
                 case 'left':
                     return {
                         x: outerOffset.left,
-                        y: outerOffset.top ,
+                        y: outerOffset.top + titleSize ,
                         w: outerOffset.left + titleSize + edgeAnchor.x,
                         h: outerOffset.top + outerHeight
                     };
@@ -1829,7 +1829,7 @@ define('wcDocker/panel',[
                 case 'right':
                     return {
                         x: outerOffset.left + outerWidth - edgeAnchor.x - titleSize,
-                        y: outerOffset.top,
+                        y: outerOffset.top  + titleSize,
                         w: edgeAnchor.x + titleSize,
                         h: outerOffset.top + outerHeight
                     };
@@ -1867,25 +1867,25 @@ define('wcDocker/panel',[
                 case 'left':
                     return {
                         x: offset.left,
-                        y: offset.top ,
-                        w: allowEdges ? panelAnchor.x + titleSize - edgeAnchor.x: panelAnchor.x + titleSize,
-                        h: allowEdges? height - panelAnchor.y : height
+                        y: offset.top  + titleSize , //we don't have top tab docking
+                        w: panelAnchor.x + titleSize,
+                        h: height - titleSize
                     };
                     break;
                 case 'right':
                     return {
                         x: offset.left + width - panelAnchor.x - titleSize,
-                        y: offset.top,
-                        w: allowEdges ? panelAnchor.x + titleSize - edgeAnchor.x : panelAnchor.x + titleSize,
-                        h: allowEdges ? height - panelAnchor.y : height
+                        y: offset.top  + titleSize,
+                        w: panelAnchor.x + titleSize,
+                        h: height - titleSize
                     };
                     break;
                 case 'top':
                     return {
                         x: offset.left,
-                        y: allowEdges ? offset.top + edgeAnchor.y : offset.top,
+                        y: offset.top + titleSize,
                         w: width,
-                        h: panelAnchor.y + titleSize
+                        h: panelAnchor.y
                     };
                     break;
                 case 'bottom':
@@ -19132,9 +19132,10 @@ define('wcDocker/docker',[
             this._ghost = null;
             this._menuTimer = 0;
             this._mouseOrigin = {x: 0, y: 0};
-            this.dropableAreas = {};
             this.dropPositions = ['left', 'right', 'top', 'bottom'];
+            this.dropableAreas = {};
             this.dropableEdgeAreas = {};
+            this.dropableTabAreas= {};
             this._resizeData = {
                 time: -1,
                 timeout: false,

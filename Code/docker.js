@@ -103,9 +103,10 @@ define([
             this._ghost = null;
             this._menuTimer = 0;
             this._mouseOrigin = {x: 0, y: 0};
-            this.dropableAreas = {};
             this.dropPositions = ['left', 'right', 'top', 'bottom'];
+            this.dropableAreas = {};
             this.dropableEdgeAreas = {};
+            this.dropableTabAreas= {};
             this._resizeData = {
                 time: -1,
                 timeout: false,
