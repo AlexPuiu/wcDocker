@@ -253,6 +253,13 @@ define([
                     'style="background: red; z-index: 19; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
                     'DROP HERE</div>').css('display', 'none');
                 $('body').append(this.dropableAreas[id]);
+
+                var idTabArea = 'dropAreaTab_' +   this.dropPositions[i] + '_' + idPanel;
+                this.dropableTabAreas[idTabArea] = $('<div id="' + idTabArea + '" ' +
+                    'style="background: yellow; z-index: 21; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
+                    'DROP HERE</div>').css('display', 'none');
+                $('body').append(this.dropableTabAreas[idTabArea]);
+
             }
 
             var $menu = $('menu').find('menu');
