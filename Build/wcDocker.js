@@ -1862,9 +1862,9 @@ define('wcDocker/panel',[
             switch (position) {
                 case 'left':
                     return {
-                        x: outerOffset.left,
+                        x: outerOffset.left + titleSize,
                         y: outerOffset.top + titleSize ,
-                        w: outerOffset.left + titleSize + edgeAnchor.x,
+                        w: outerOffset.left + edgeAnchor.x,
                         h: outerOffset.top + outerHeight
                     };
                     break;
