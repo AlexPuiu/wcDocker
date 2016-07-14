@@ -786,7 +786,7 @@ define([
             for (var i = 0; i < docker.dropPositions.length; i++) {
                 var position = docker.dropPositions[i];
                 var divName = 'dropArea_' + position + '_' + idPanel;
-                var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, false);
+                var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize);
                 if (coordinates != null) {
                     this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName, docker.dropableAreas);
                 }
@@ -807,6 +807,52 @@ define([
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize) {
+            var offset = this.$container.offset();
+            var width  = this.$container.outerWidth();
+            var height = this.$container.outerHeight();
+
+            switch (position) {
+                case 'left':
+                    return {
+                        x: offset.left,
+                        y: offset.top  + titleSize , //we don't have top tab docking
+                        w: panelAnchor.x + titleSize,
+                        h: height - titleSize
+                    };
+                    break;
+                case 'right':
+                    return {
+                        x: offset.left + width - panelAnchor.x - titleSize,
+                        y: offset.top  + titleSize,
+                        w: panelAnchor.x + titleSize,
+                        h: height - titleSize
+                    };
+                    break;
+                case 'top':
+                    return {
+                        x: offset.left,
+                        y: offset.top + titleSize,
+                        w: width,
+                        h: panelAnchor.y
+                    };
+                    break;
+                case 'bottom':
+                    return {
+                        x: offset.left,
+                        y: offset.top + height - panelAnchor.y - titleSize,
+                        w: width,
+                        h: panelAnchor.y + titleSize
+                    };
+                    break;
+                default:
+                    return null;
+                    break;
+            }
+
+            return null;
+        },
+
         __getEdgeDropAreaCoordinates: function (position, edgeAnchor,panelAnchor, width, height, titleSize, ghost) {
             var outerWidth = ghost._outer.$container.outerWidth();
             var outerHeight = ghost._outer.$container.outerHeight();
@@ -853,52 +899,6 @@ define([
             return null;
         },
 
-        __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize, allowEdges) {
-            var offset = this.$container.offset();
-            var width  = this.$container.outerWidth();
-            var height = this.$container.outerHeight();
-
-            switch (position) {
-                case 'left':
-                    return {
-                        x: offset.left,
-                        y: offset.top  + titleSize , //we don't have top tab docking
-                        w: panelAnchor.x + titleSize,
-                        h: height - titleSize
-                    };
-                    break;
-                case 'right':
-                    return {
-                        x: offset.left + width - panelAnchor.x - titleSize,
-                        y: offset.top  + titleSize,
-                        w: panelAnchor.x + titleSize,
-                        h: height - titleSize
-                    };
-                    break;
-                case 'top':
-                    return {
-                        x: offset.left,
-                        y: offset.top + titleSize,
-                        w: width,
-                        h: panelAnchor.y
-                    };
-                    break;
-                case 'bottom':
-                    return {
-                        x: offset.left,
-                        y: offset.top + height - panelAnchor.y - titleSize,
-                        w: width,
-                        h: panelAnchor.y + titleSize
-                    };
-                    break;
-                default:
-                    return null;
-                    break;
-            }
-
-            return null;
-        },
-
         __getTabDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize) {
             var offset = this.$container.offset();
             var width  = this.$container.outerWidth();
@@ -908,17 +908,17 @@ define([
                 case 'left':
                     return {
                         x: offset.left,
-                        y: offset.top ,
+                        y: offset.top + titleSize ,
                         w: titleSize,
-                        h: offset.top + height
+                        h: height - titleSize
                     };
                     break;
                 case 'right':
                     return {
                         x: offset.left + width - titleSize,
-                        y: offset.top,
+                        y: offset.top + titleSize,
                         w: titleSize,
-                        h: offset.top + height
+                        h: height - titleSize
                     };
                     break;
                 case 'bottom':

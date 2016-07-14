@@ -1787,7 +1787,7 @@ define('wcDocker/panel',[
             for (var i = 0; i < docker.dropPositions.length; i++) {
                 var position = docker.dropPositions[i];
                 var divName = 'dropArea_' + position + '_' + idPanel;
-                var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, false);
+                var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize);
                 if (coordinates != null) {
                     this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName, docker.dropableAreas);
                 }
@@ -1808,6 +1808,52 @@ define('wcDocker/panel',[
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize) {
+            var offset = this.$container.offset();
+            var width  = this.$container.outerWidth();
+            var height = this.$container.outerHeight();
+
+            switch (position) {
+                case 'left':
+                    return {
+                        x: offset.left,
+                        y: offset.top  + titleSize , //we don't have top tab docking
+                        w: panelAnchor.x + titleSize,
+                        h: height - titleSize
+                    };
+                    break;
+                case 'right':
+                    return {
+                        x: offset.left + width - panelAnchor.x - titleSize,
+                        y: offset.top  + titleSize,
+                        w: panelAnchor.x + titleSize,
+                        h: height - titleSize
+                    };
+                    break;
+                case 'top':
+                    return {
+                        x: offset.left,
+                        y: offset.top + titleSize,
+                        w: width,
+                        h: panelAnchor.y
+                    };
+                    break;
+                case 'bottom':
+                    return {
+                        x: offset.left,
+                        y: offset.top + height - panelAnchor.y - titleSize,
+                        w: width,
+                        h: panelAnchor.y + titleSize
+                    };
+                    break;
+                default:
+                    return null;
+                    break;
+            }
+
+            return null;
+        },
+
         __getEdgeDropAreaCoordinates: function (position, edgeAnchor,panelAnchor, width, height, titleSize, ghost) {
             var outerWidth = ghost._outer.$container.outerWidth();
             var outerHeight = ghost._outer.$container.outerHeight();
@@ -1854,52 +1900,6 @@ define('wcDocker/panel',[
             return null;
         },
 
-        __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize, allowEdges) {
-            var offset = this.$container.offset();
-            var width  = this.$container.outerWidth();
-            var height = this.$container.outerHeight();
-
-            switch (position) {
-                case 'left':
-                    return {
-                        x: offset.left,
-                        y: offset.top  + titleSize , //we don't have top tab docking
-                        w: panelAnchor.x + titleSize,
-                        h: height - titleSize
-                    };
-                    break;
-                case 'right':
-                    return {
-                        x: offset.left + width - panelAnchor.x - titleSize,
-                        y: offset.top  + titleSize,
-                        w: panelAnchor.x + titleSize,
-                        h: height - titleSize
-                    };
-                    break;
-                case 'top':
-                    return {
-                        x: offset.left,
-                        y: offset.top + titleSize,
-                        w: width,
-                        h: panelAnchor.y
-                    };
-                    break;
-                case 'bottom':
-                    return {
-                        x: offset.left,
-                        y: offset.top + height - panelAnchor.y - titleSize,
-                        w: width,
-                        h: panelAnchor.y + titleSize
-                    };
-                    break;
-                default:
-                    return null;
-                    break;
-            }
-
-            return null;
-        },
-
         __getTabDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize) {
             var offset = this.$container.offset();
             var width  = this.$container.outerWidth();
@@ -1909,17 +1909,17 @@ define('wcDocker/panel',[
                 case 'left':
                     return {
                         x: offset.left,
-                        y: offset.top ,
+                        y: offset.top + titleSize ,
                         w: titleSize,
-                        h: offset.top + height
+                        h: height - titleSize
                     };
                     break;
                 case 'right':
                     return {
                         x: offset.left + width - titleSize,
-                        y: offset.top,
+                        y: offset.top + titleSize,
                         w: titleSize,
-                        h: offset.top + height
+                        h: height - titleSize
                     };
                     break;
                 case 'bottom':
@@ -19165,7 +19165,10 @@ define('wcDocker/docker',[
             this._ghost = null;
             this._menuTimer = 0;
             this._mouseOrigin = {x: 0, y: 0};
-            this.dropPositions = ['left', 'right', 'top', 'bottom'];
+            this.dropableAreaHtml = $('<div style="background: #8BB5C0; z-index: 19; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
+            this.dropableTabAreaHtml = $('<div style="background: #F9CC9D; z-index: 21; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
+            this.dropableEdgeAreaHtml = $('<div style="background: #C2CF8A; z-index: 20; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
+            this.dropPositions = ['top', 'bottom', 'left', 'right'];
             this.dropableAreas = {};
             this.dropableEdgeAreas = {};
             this.dropableTabAreas= {};
@@ -19311,15 +19314,13 @@ define('wcDocker/docker',[
             var idPanel = options.title.replace(/\s+/g, '');
             for (var i = 0; i < this.dropPositions.length; i++) {
                 var id = 'dropArea_' +   this.dropPositions[i] + '_' + idPanel;
-                this.dropableAreas[id] = $('<div id="' + id + '" ' +
-                    'style="background: red; z-index: 19; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
-                    'DROP HERE</div>').css('display', 'none');
+                var clone = this.dropableAreaHtml.clone().attr('id', id);
+                this.dropableAreas[id] = clone;
                 $('body').append(this.dropableAreas[id]);
 
                 var idTabArea = 'dropAreaTab_' +   this.dropPositions[i] + '_' + idPanel;
-                this.dropableTabAreas[idTabArea] = $('<div id="' + idTabArea + '" ' +
-                    'style="background: yellow; z-index: 21; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
-                    'DROP HERE</div>').css('display', 'none');
+                var newClone = this.dropableTabAreaHtml.clone().attr('id', idTabArea);
+                this.dropableTabAreas[idTabArea] = newClone;
                 $('body').append(this.dropableTabAreas[idTabArea]);
             }
 
@@ -20442,9 +20443,8 @@ define('wcDocker/docker',[
 
             for (var i = 0; i < this.dropPositions.length; i++) {
                 var id = 'dropAreaEdge_' +   this.dropPositions[i];
-                this.dropableEdgeAreas[id] = $('<div id="' + id + '" ' +
-                    'style="background: blue; z-index: 20; position: fixed; text-align: right; opacity: 0.5; border: darkgrey dotted 2px ">' +
-                    'DROP HERE</div>').css('display', 'none');
+                var clone = this.dropableEdgeAreaHtml.clone().attr('id', id);
+                this.dropableEdgeAreas[id] = clone;
                 $('body').append(this.dropableEdgeAreas[id]);
             }
 
