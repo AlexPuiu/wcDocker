@@ -1781,13 +1781,13 @@ define('wcDocker/panel',[
             return [];
         },
         
-        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost) {
+        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem) {
             var docker = this.docker();
             var idPanel = this.title().replace(/\s+/g, '');
             for (var i = 0; i < docker.dropPositions.length; i++) {
                 var position = docker.dropPositions[i];
                 var divName = 'dropArea_' + position + '_' + idPanel;
-                var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize);
+                var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, $elem);
                 if (coordinates != null) {
                     this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName, docker.dropableAreas);
                 }
@@ -1797,7 +1797,7 @@ define('wcDocker/panel',[
                     this.__showDropArea(edgeCoordinates.x, edgeCoordinates.y, edgeCoordinates.w, edgeCoordinates.h, divName, docker.dropableEdgeAreas);
                 }
                 var divName = 'dropAreaTab_' + position + '_' + idPanel;
-                var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize);
+                var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize, $elem);
                 if (tabCoodrinates != null) {
                     this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divName, docker.dropableTabAreas);
                 }
@@ -1808,10 +1808,10 @@ define('wcDocker/panel',[
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize) {
-            var offset = this.$container.offset();
-            var width  = this.$container.outerWidth();
-            var height = this.$container.outerHeight();
+        __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize, $elem) {
+            var offset = $elem.offset();
+            var width  = $elem.outerWidth();
+            var height = $elem.outerHeight();
 
             switch (position) {
                 case 'left':
@@ -1900,10 +1900,10 @@ define('wcDocker/panel',[
             return null;
         },
 
-        __getTabDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize) {
-            var offset = this.$container.offset();
-            var width  = this.$container.outerWidth();
-            var height = this.$container.outerHeight();
+        __getTabDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize, $elem) {
+            var offset = $elem.offset();
+            var width  = $elem.outerWidth();
+            var height = $elem.outerHeight();
 
             switch (position) {
                 case 'left':
@@ -5025,7 +5025,9 @@ define('wcDocker/layout',[
         //    allowEdges            Whether to allow edge docking.
         __checkAnchorDrop: function (mouse, same, ghost, canSplit, $elem, title, isTopper, forceTabOrientation, allowEdges) {
             var docker = this._parent.docker();
-            
+            var htmlElemOver = $(document.elementFromPoint(mouse.x, mouse.y));
+            var panelElement = htmlElemOver.closest('.wcLayoutPane');
+
             var width = $elem.outerWidth();
             var height = $elem.outerHeight();
             var offset = $elem.offset();
@@ -5062,8 +5064,9 @@ define('wcDocker/layout',[
             if (!same && this._parent && this._parent.instanceOf('wcPanel')) {
                 var panel = this._parent;
                 if(panel.isVisible()) {
+                    console.log(panel._title);
                     setTimeout(function () {
-                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost);
+                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem);
                      }, 1);
                 }
 

@@ -95,7 +95,7 @@ define([
         //    allowEdges            Whether to allow edge docking.
         __checkAnchorDrop: function (mouse, same, ghost, canSplit, $elem, title, isTopper, forceTabOrientation, allowEdges) {
             var docker = this._parent.docker();
-            
+         
             var width = $elem.outerWidth();
             var height = $elem.outerHeight();
             var offset = $elem.offset();
@@ -132,8 +132,9 @@ define([
             if (!same && this._parent && this._parent.instanceOf('wcPanel')) {
                 var panel = this._parent;
                 if(panel.isVisible()) {
+                    console.log(panel._title);
                     setTimeout(function () {
-                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost);
+                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem);
                      }, 1);
                 }
 

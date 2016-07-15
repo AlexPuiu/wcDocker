@@ -780,13 +780,13 @@ define([
             return [];
         },
         
-        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost) {
+        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem) {
             var docker = this.docker();
             var idPanel = this.title().replace(/\s+/g, '');
             for (var i = 0; i < docker.dropPositions.length; i++) {
                 var position = docker.dropPositions[i];
                 var divName = 'dropArea_' + position + '_' + idPanel;
-                var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize);
+                var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, $elem);
                 if (coordinates != null) {
                     this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName, docker.dropableAreas);
                 }
@@ -796,7 +796,7 @@ define([
                     this.__showDropArea(edgeCoordinates.x, edgeCoordinates.y, edgeCoordinates.w, edgeCoordinates.h, divName, docker.dropableEdgeAreas);
                 }
                 var divName = 'dropAreaTab_' + position + '_' + idPanel;
-                var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize);
+                var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize, $elem);
                 if (tabCoodrinates != null) {
                     this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divName, docker.dropableTabAreas);
                 }
@@ -807,10 +807,10 @@ define([
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize) {
-            var offset = this.$container.offset();
-            var width  = this.$container.outerWidth();
-            var height = this.$container.outerHeight();
+        __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize, $elem) {
+            var offset = $elem.offset();
+            var width  = $elem.outerWidth();
+            var height = $elem.outerHeight();
 
             switch (position) {
                 case 'left':
@@ -899,10 +899,10 @@ define([
             return null;
         },
 
-        __getTabDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize) {
-            var offset = this.$container.offset();
-            var width  = this.$container.outerWidth();
-            var height = this.$container.outerHeight();
+        __getTabDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize, $elem) {
+            var offset = $elem.offset();
+            var width  = $elem.outerWidth();
+            var height = $elem.outerHeight();
 
             switch (position) {
                 case 'left':
