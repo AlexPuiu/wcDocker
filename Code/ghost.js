@@ -187,7 +187,13 @@ define([
                 .css('left', rect.x + 'px')
                 .css('width', rect.w + 'px')
                 .css('height', rect.h + 'px');
-
+            /*this.$ghost.append($('<div style="width: 30%; height: auto; margin: 0 auto; padding: 10px; position: relative; color:black">' +
+                '<ul style="overflow: hidden">' +
+                '<li style="margin-right: 10px"><span style="margin: 5px; border: 1px solid #ccc; width: 20px; height: 20px; background-color: #8BB5C0">&nbsp;</span>Dock inside a panel</li>' +
+                '<li style="margin-right: 10px"><span style="margin: 5px; border: 1px solid #ccc; width: 20px; height: 20px; background-color: #F9CC9D">&nbsp;</span>Dock as a tab</li>' +
+                '<li style="margin-right: 10px"><span style="margin: 5px; border: 1px solid #ccc; width: 20px; height: 20px; background-color: #C2CF8A"></span>Dock on the edge</li>' +
+                '</ul>' +
+                '</div>'));*/
             this._anchorMouse = {
                 x: rect.x - mouse.x,
                 y: rect.y - mouse.y
