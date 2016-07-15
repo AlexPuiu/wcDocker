@@ -780,8 +780,9 @@ define([
             return [];
         },
         
-        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem) {
+        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse) {
             var docker = this.docker();
+            var panel = this.__getPanelUnderCursor(mouse);
             var idPanel = this.title().replace(/\s+/g, '');
             for (var i = 0; i < docker.dropPositions.length; i++) {
                 var position = docker.dropPositions[i];
@@ -807,6 +808,14 @@ define([
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        __getPanelUnderCursor: function (mouse) {
+            var panelElement = null;
+            var htmlElement = $(document.elementFromPoint(mouse.x, mouse.y));
+            var parent = htmlElement.closest('.wcFrame');
+            panelElement = parent;
+            return panelElement;
+
+        },
         __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize, $elem) {
             var offset = $elem.offset();
             var width  = $elem.outerWidth();

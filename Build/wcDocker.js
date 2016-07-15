@@ -1781,8 +1781,9 @@ define('wcDocker/panel',[
             return [];
         },
         
-        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem) {
+        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse) {
             var docker = this.docker();
+            var panel = this.__getPanelUnderCursor(mouse);
             var idPanel = this.title().replace(/\s+/g, '');
             for (var i = 0; i < docker.dropPositions.length; i++) {
                 var position = docker.dropPositions[i];
@@ -1808,6 +1809,14 @@ define('wcDocker/panel',[
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        __getPanelUnderCursor: function (mouse) {
+            var panelElement = null;
+            var htmlElement = $(document.elementFromPoint(mouse.x, mouse.y));
+            var parent = htmlElement.closest('.wcFrame');
+            panelElement = parent;
+            return panelElement;
+
+        },
         __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize, $elem) {
             var offset = $elem.offset();
             var width  = $elem.outerWidth();
@@ -2366,7 +2375,7 @@ define('wcDocker/ghost',[
                 .css('left', rect.x + 'px')
                 .css('width', rect.w + 'px')
                 .css('height', rect.h + 'px');
-            /*this.$ghost.append($('<div style="width: 30%; height: auto; margin: 0 auto; padding: 10px; position: relative; color:black">' +
+                /*this.$ghost.append($('<div style="width: 30%; height: auto; margin: 0 auto; padding: 10px; position: relative; color:black">' +
                 '<ul style="overflow: hidden">' +
                 '<li style="margin-right: 10px"><span style="margin: 5px; border: 1px solid #ccc; width: 20px; height: 20px; background-color: #8BB5C0">&nbsp;</span>Dock inside a panel</li>' +
                 '<li style="margin-right: 10px"><span style="margin: 5px; border: 1px solid #ccc; width: 20px; height: 20px; background-color: #F9CC9D">&nbsp;</span>Dock as a tab</li>' +
@@ -5070,7 +5079,7 @@ define('wcDocker/layout',[
                 if(panel.isVisible()) {
                     console.log(panel._title);
                     setTimeout(function () {
-                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem);
+                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse);
                      }, 1);
                 }
 

@@ -134,7 +134,7 @@ define([
                 if(panel.isVisible()) {
                     console.log(panel._title);
                     setTimeout(function () {
-                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem);
+                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse);
                      }, 1);
                 }
 
