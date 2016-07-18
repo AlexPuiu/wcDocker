@@ -138,7 +138,7 @@ define([
             var edgeAnchor = __getAnchorSizes(docker._options.edgeAnchorSize, docker.$container.outerWidth(), docker.$container.outerHeight());
             var panelAnchor = __getAnchorSizes(docker._options.panelAnchorSize, width, height);
 
-            if (!same && this._parent && this._parent.instanceOf('wcPanel')) {
+            if (this._parent && this._parent.instanceOf('wcPanel')) {
                 var panel = this._parent;
                 if(panel.isVisible()) {
                     if(__isPanelUnderMouse(panel, mouse)) {
