@@ -20360,6 +20360,20 @@ define('wcDocker/docker',[
                 this._frameList[i].__destroy();
             }
 
+            this.dropAreaLegend.css('display', 'none');
+
+            for (var area in this.dropablePanelAreas) {
+                if (this.dropablePanelAreas.hasOwnProperty(area)) {
+                    this.dropablePanelAreas[area].css('display', 'none');
+                }
+            }
+
+            for (var area in this.dropableEdgeAreas) {
+                if (this.dropableEdgeAreas.hasOwnProperty(area)) {
+                    this.dropableEdgeAreas[area].css('display', 'none');
+                }
+            }
+
             if (!$.isEmptyObject(this._collapser)) {
                 this._collapser[wcDocker.DOCK.LEFT].__destroy();
                 this._collapser[wcDocker.DOCK.RIGHT].__destroy();
@@ -20501,14 +20515,12 @@ define('wcDocker/docker',[
 
                 for (var area in self.dropablePanelAreas) {
                     if (self.dropablePanelAreas.hasOwnProperty(area)) {
-                       var id = '#' + area;
                         self.dropablePanelAreas[area].css('display', 'none');
                     }
                 }
 
                 for (var area in self.dropableEdgeAreas) {
                     if (self.dropableEdgeAreas.hasOwnProperty(area)) {
-                        var id = '#' + area;
                         self.dropableEdgeAreas[area].css('display', 'none');
                     }
                 }
