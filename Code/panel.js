@@ -803,7 +803,7 @@ define([
                 if (edgeCoordinates != null) {
                     this.__showDropArea(edgeCoordinates.x, edgeCoordinates.y, edgeCoordinates.w, edgeCoordinates.h, divNameEdge, docker.dropableEdgeAreas);
                 }
-
+                docker.dropAreaLegend.css('display', '');
             }
         },
 
