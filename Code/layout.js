@@ -99,7 +99,7 @@ define([
             var width = $elem.outerWidth();
             var height = $elem.outerHeight();
             var offset = $elem.offset();
-           // console.log('OFFSET: ' + JSON.stringify(offset));
+
             var titleSize = $elem.find('.wcFrameTitleBar').height();
             if (!title) {
                 titleSize = 0;
@@ -132,12 +132,10 @@ define([
             if (!same && this._parent && this._parent.instanceOf('wcPanel')) {
                 var panel = this._parent;
                 if(panel.isVisible()) {
-                    console.log(panel._title);
                     setTimeout(function () {
                         panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse);
                      }, 1);
                 }
-
             }
 
             // If the target panel has a title, hovering over it (on all sides) will cause stacking
@@ -229,7 +227,6 @@ define([
                 // Left edge
                 if (mouse.y >= outerOffset.top && mouse.y <= outerOffset.top + outerHeight &&
                     mouse.x >= outerOffset.left + titleSize && mouse.x <= outerOffset.left + titleSize + edgeAnchor.x) {
-                    console.log('Left EDGE docking');
                     var x = outerOffset.left;
                     var y = outerOffset.top;
                     var w = outerOffset.left + titleSize + edgeAnchor.x;
@@ -351,7 +348,6 @@ define([
             // Left side docking
             if (mouse.y >= offset.top && mouse.y <= offset.top + height) {
                 if (mouse.x >= offset.left && mouse.x <= offset.left + panelAnchor.x + titleSize) {
-                    console.log('Left SIDE docking ');
                     ghost.anchor(mouse, {
                         x: offset.left - 2,
                         y: offset.top - 2,

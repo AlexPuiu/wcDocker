@@ -1,5 +1,4 @@
-(function () {
-/**
+(function () {/**
  * @license almond 0.3.1 Copyright (c) 2011-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/almond for details
@@ -1783,8 +1782,8 @@ define('wcDocker/panel',[
         
         showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse) {
             var docker = this.docker();
-            var panel = this.__getPanelUnderCursor(mouse);
             var idPanel = this.title().replace(/\s+/g, '');
+
             for (var i = 0; i < docker.dropPositions.length; i++) {
                 var position = docker.dropPositions[i];
                 var divName = 'dropArea_' + position + '_' + idPanel;
@@ -1792,15 +1791,15 @@ define('wcDocker/panel',[
                 if (coordinates != null) {
                     this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName, docker.dropableAreas);
                 }
-                var divName = 'dropAreaEdge_' + position;
+                var divNameEdge = 'dropAreaEdge_' + position;
                 var edgeCoordinates = this.__getEdgeDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, ghost);
                 if (edgeCoordinates != null) {
-                    this.__showDropArea(edgeCoordinates.x, edgeCoordinates.y, edgeCoordinates.w, edgeCoordinates.h, divName, docker.dropableEdgeAreas);
+                    this.__showDropArea(edgeCoordinates.x, edgeCoordinates.y, edgeCoordinates.w, edgeCoordinates.h, divNameEdge, docker.dropableEdgeAreas);
                 }
-                var divName = 'dropAreaTab_' + position + '_' + idPanel;
+                var divNameTab = 'dropAreaTab_' + position + '_' + idPanel;
                 var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize, $elem);
                 if (tabCoodrinates != null) {
-                    this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divName, docker.dropableTabAreas);
+                    this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divNameTab, docker.dropableTabAreas);
                 }
             }
         },
@@ -1809,14 +1808,6 @@ define('wcDocker/panel',[
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        __getPanelUnderCursor: function (mouse) {
-            var panelElement = null;
-            var htmlElement = $(document.elementFromPoint(mouse.x, mouse.y));
-            var parent = htmlElement.closest('.wcFrame');
-            panelElement = parent;
-            return panelElement;
-
-        },
         __getDropAreaCoordinates: function (position, edgeAnchor, panelAnchor, width, height, titleSize, $elem) {
             var offset = $elem.offset();
             var width  = $elem.outerWidth();
@@ -1948,14 +1939,23 @@ define('wcDocker/panel',[
         },
 
         __showDropArea: function(x, y, w, h, id, areas) {
-            var dropableArea = areas[id];
-            if (dropableArea && dropableArea.css('display') == 'none') {
-                dropableArea
-                    .css('top', y + 'px')
-                    .css('left', x + 'px')
-                    .css('width', w + 'px')
-                    .css('height', h + 'px')
-                    .css('display', '');
+            //var dropableArea = areas[id];
+            var docker = this.docker();
+            var panelUnderFocus = docker.panelUnderFocus;
+            for (var area in areas) {
+                if (areas.hasOwnProperty(area)) {
+                    var panel = areas[area];
+                    if(area.indexOf(panelUnderFocus) > -1) {
+                        panel.css('top', y + 'px')
+                            .css('left', x + 'px')
+                            .css('width', w + 'px')
+                            .css('height', h + 'px')
+                            .css('display', '');
+                    } else {
+                        panel.css('display', 'none');
+                    }
+
+                }
             }
         },
 
@@ -5044,7 +5044,7 @@ define('wcDocker/layout',[
             var width = $elem.outerWidth();
             var height = $elem.outerHeight();
             var offset = $elem.offset();
-           // console.log('OFFSET: ' + JSON.stringify(offset));
+
             var titleSize = $elem.find('.wcFrameTitleBar').height();
             if (!title) {
                 titleSize = 0;
@@ -5077,12 +5077,10 @@ define('wcDocker/layout',[
             if (!same && this._parent && this._parent.instanceOf('wcPanel')) {
                 var panel = this._parent;
                 if(panel.isVisible()) {
-                    console.log(panel._title);
                     setTimeout(function () {
                         panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse);
                      }, 1);
                 }
-
             }
 
             // If the target panel has a title, hovering over it (on all sides) will cause stacking
@@ -5174,7 +5172,6 @@ define('wcDocker/layout',[
                 // Left edge
                 if (mouse.y >= outerOffset.top && mouse.y <= outerOffset.top + outerHeight &&
                     mouse.x >= outerOffset.left + titleSize && mouse.x <= outerOffset.left + titleSize + edgeAnchor.x) {
-                    console.log('Left EDGE docking');
                     var x = outerOffset.left;
                     var y = outerOffset.top;
                     var w = outerOffset.left + titleSize + edgeAnchor.x;
@@ -5296,7 +5293,6 @@ define('wcDocker/layout',[
             // Left side docking
             if (mouse.y >= offset.top && mouse.y <= offset.top + height) {
                 if (mouse.x >= offset.left && mouse.x <= offset.left + panelAnchor.x + titleSize) {
-                    console.log('Left SIDE docking ');
                     ghost.anchor(mouse, {
                         x: offset.left - 2,
                         y: offset.top - 2,
@@ -19185,6 +19181,7 @@ define('wcDocker/docker',[
             this.dropableTabAreaHtml = $('<div style="background: #F9CC9D; z-index: 21; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
             this.dropableEdgeAreaHtml = $('<div style="background: #C2CF8A; z-index: 20; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
             this.dropPositions = ['top', 'bottom', 'left', 'right'];
+            this.panelUnderFocus = '';
             this.dropableAreas = {};
             this.dropableEdgeAreas = {};
             this.dropableTabAreas= {};
@@ -20448,7 +20445,7 @@ define('wcDocker/docker',[
             // Mouse released
             $('body').on('mouseup', __onMouseUp);
             $('body').on('touchend', __onMouseUp);
-
+            $('body').on('mouseenter', '.wcFrame ', __onMouseEnterPanel);
             // Clicking on a custom tab button.
             $('body').on('click', '.wcCustomTab .wcFrameButton', __onClickCustomTabButton);
             // Clicking on a panel frame button.
@@ -20469,6 +20466,26 @@ define('wcDocker/docker',[
                 var mouse = self.__mouse(event);
                 self._mouseOrigin.x = mouse.x;
                 self._mouseOrigin.y = mouse.y;
+            }
+
+            function __onMouseEnterPanel(ev) {
+                var mouse = self.__mouse(ev);
+
+                if (mouse.which === 3 || (
+                    !self._draggingSplitter && !self._draggingFrameSizer && !self._draggingCustomTabFrame && !self._ghost && !self._draggingFrame && !self._draggingFrameTab)) {
+                    return true;
+                }
+
+                var panelTarget = $(this);
+                if (!panelTarget) {
+                    return;
+                }
+                var titleNode = $(this).find('.wcFrameTitle');
+                if(titleNode.length == 0){
+                    return;
+                }
+                self.panelUnderFocus = titleNode.text().replace(/\s+/g, '');
+                console.log(self.panelUnderFocus);
             }
 
             // on mouseup

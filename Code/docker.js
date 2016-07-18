@@ -107,6 +107,7 @@ define([
             this.dropableTabAreaHtml = $('<div style="background: #F9CC9D; z-index: 21; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
             this.dropableEdgeAreaHtml = $('<div style="background: #C2CF8A; z-index: 20; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
             this.dropPositions = ['top', 'bottom', 'left', 'right'];
+            this.panelUnderFocus = '';
             this.dropableAreas = {};
             this.dropableEdgeAreas = {};
             this.dropableTabAreas= {};
@@ -1370,7 +1371,7 @@ define([
             // Mouse released
             $('body').on('mouseup', __onMouseUp);
             $('body').on('touchend', __onMouseUp);
-
+            $('body').on('mouseenter', '.wcFrame ', __onMouseEnterPanel);
             // Clicking on a custom tab button.
             $('body').on('click', '.wcCustomTab .wcFrameButton', __onClickCustomTabButton);
             // Clicking on a panel frame button.
@@ -1391,6 +1392,26 @@ define([
                 var mouse = self.__mouse(event);
                 self._mouseOrigin.x = mouse.x;
                 self._mouseOrigin.y = mouse.y;
+            }
+
+            function __onMouseEnterPanel(ev) {
+                var mouse = self.__mouse(ev);
+
+                if (mouse.which === 3 || (
+                    !self._draggingSplitter && !self._draggingFrameSizer && !self._draggingCustomTabFrame && !self._ghost && !self._draggingFrame && !self._draggingFrameTab)) {
+                    return true;
+                }
+
+                var panelTarget = $(this);
+                if (!panelTarget) {
+                    return;
+                }
+                var titleNode = $(this).find('.wcFrameTitle');
+                if(titleNode.length == 0){
+                    return;
+                }
+                self.panelUnderFocus = titleNode.text().replace(/\s+/g, '');
+                console.log(self.panelUnderFocus);
             }
 
             // on mouseup
