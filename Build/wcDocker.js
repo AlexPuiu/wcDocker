@@ -1781,18 +1781,14 @@ define('wcDocker/panel',[
             return [];
         },
         
-        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse) {
+        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem) {
             var docker = this.docker();
             var idPanel = this.title().replace(/\s+/g, '');
 
             for (var i = 0; i < docker.dropPositions.length; i++) {
                 var position = docker.dropPositions[i];
 
-                var divNameTab = 'dropAreaTab_' + position + '_' + idPanel;
-                var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize, $elem);
-                if (tabCoodrinates != null) {
-                    this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divNameTab, docker.dropablePanelAreas);
-                }
+
 
                 var divName = 'dropArea_' + position + '_' + idPanel;
                 var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, $elem);
@@ -1803,6 +1799,12 @@ define('wcDocker/panel',[
                 var edgeCoordinates = this.__getEdgeDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, ghost);
                 if (edgeCoordinates != null) {
                     this.__showDropArea(edgeCoordinates.x, edgeCoordinates.y, edgeCoordinates.w, edgeCoordinates.h, divNameEdge, docker.dropableEdgeAreas);
+                }
+
+                var divNameTab = 'dropAreaTab_' + position + '_' + idPanel;
+                var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize, $elem);
+                if (tabCoodrinates != null) {
+                    this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divNameTab, docker.dropablePanelAreas);
                 }
                 docker.dropAreaLegend.css('display', '');
             }
@@ -1943,6 +1945,22 @@ define('wcDocker/panel',[
         },
 
         __showDropArea: function(x, y, w, h, id, areas) {
+
+            for(area in areas) {
+                var dropableArea = areas[id];
+                if (area == id) {
+                    if (dropableArea && dropableArea.css('display') == 'none') {
+                        dropableArea
+                            .css('top', y + 'px')
+                            .css('left', x + 'px')
+                            .css('width', w + 'px')
+                            .css('height', h + 'px')
+                            .css('display', '');
+                    } else {
+                        dropableArea.css('display', 'none');
+                    }
+                }
+            }
             var dropableArea = areas[id];
             if (dropableArea && dropableArea.css('display') == 'none') {
                 dropableArea
@@ -5090,7 +5108,7 @@ define('wcDocker/layout',[
                 if(panel.isVisible()) {
                     if(__isPanelUnderMouse(panel, mouse)) {
                         setTimeout(function () {
-                            panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse);
+                            panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem);
                         }, 1);
                     } else {
                         setTimeout(function () {
@@ -19182,8 +19200,8 @@ define('wcDocker/docker',[
             this._menuTimer = 0;
             this._mouseOrigin = {x: 0, y: 0};
             this.dropableAreaHtml = $('<div style="background: #8BB5C0; z-index: 19; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
-            this.dropableTabAreaHtml = $('<div style="background: #F9CC9D; z-index: 20; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
-            this.dropableEdgeAreaHtml = $('<div style="background: #C2CF8A; z-index: 21; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
+            this.dropableTabAreaHtml = $('<div style="background: #F9CC9D; z-index: 21; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
+            this.dropableEdgeAreaHtml = $('<div style="background: #C2CF8A; z-index: 20; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
             /*this.dropAreaLegend =  $('<div style="background: white; z-index: 18; position: fixed; left: 0px; top: 0px; height: 60px; width: 500px; text-align: left;">' +
                 '<ul style="overflow: hidden; width: 100%">' +
                 '<li style="display:inline; margin-left: 10px"><span style="display: inline-block; margin: 5px; border: 1px solid #ccc; width: 25px; height: 25px; background-color: #8BB5C0"/><span style="display: inline-block; line-height: 25px">Dock inside a panel</span></li>' +

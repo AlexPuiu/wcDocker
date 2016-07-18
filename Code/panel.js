@@ -780,18 +780,14 @@ define([
             return [];
         },
         
-        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse) {
+        showDropableAreas: function (edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem) {
             var docker = this.docker();
             var idPanel = this.title().replace(/\s+/g, '');
 
             for (var i = 0; i < docker.dropPositions.length; i++) {
                 var position = docker.dropPositions[i];
 
-                var divNameTab = 'dropAreaTab_' + position + '_' + idPanel;
-                var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize, $elem);
-                if (tabCoodrinates != null) {
-                    this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divNameTab, docker.dropablePanelAreas);
-                }
+
 
                 var divName = 'dropArea_' + position + '_' + idPanel;
                 var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, $elem);
@@ -802,6 +798,12 @@ define([
                 var edgeCoordinates = this.__getEdgeDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, ghost);
                 if (edgeCoordinates != null) {
                     this.__showDropArea(edgeCoordinates.x, edgeCoordinates.y, edgeCoordinates.w, edgeCoordinates.h, divNameEdge, docker.dropableEdgeAreas);
+                }
+
+                var divNameTab = 'dropAreaTab_' + position + '_' + idPanel;
+                var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize, $elem);
+                if (tabCoodrinates != null) {
+                    this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divNameTab, docker.dropablePanelAreas);
                 }
                 docker.dropAreaLegend.css('display', '');
             }
@@ -942,6 +944,22 @@ define([
         },
 
         __showDropArea: function(x, y, w, h, id, areas) {
+
+            for(area in areas) {
+                var dropableArea = areas[id];
+                if (area == id) {
+                    if (dropableArea && dropableArea.css('display') == 'none') {
+                        dropableArea
+                            .css('top', y + 'px')
+                            .css('left', x + 'px')
+                            .css('width', w + 'px')
+                            .css('height', h + 'px')
+                            .css('display', '');
+                    } else {
+                        dropableArea.css('display', 'none');
+                    }
+                }
+            }
             var dropableArea = areas[id];
             if (dropableArea && dropableArea.css('display') == 'none') {
                 dropableArea

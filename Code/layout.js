@@ -143,7 +143,7 @@ define([
                 if(panel.isVisible()) {
                     if(__isPanelUnderMouse(panel, mouse)) {
                         setTimeout(function () {
-                            panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse);
+                            panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem);
                         }, 1);
                     } else {
                         setTimeout(function () {
