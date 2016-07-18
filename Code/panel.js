@@ -939,22 +939,34 @@ define([
         },
 
         __showDropArea: function(x, y, w, h, id, areas) {
-            //var dropableArea = areas[id];
-            var docker = this.docker();
-            var panelUnderFocus = docker.panelUnderFocus;
-            for (var area in areas) {
-                if (areas.hasOwnProperty(area)) {
-                    var panel = areas[area];
-                    if(area.indexOf(panelUnderFocus) > -1) {
-                        panel.css('top', y + 'px')
-                            .css('left', x + 'px')
-                            .css('width', w + 'px')
-                            .css('height', h + 'px')
-                            .css('display', '');
-                    } else {
-                        panel.css('display', 'none');
-                    }
+            var dropableArea = areas[id];
+            if (dropableArea && dropableArea.css('display') == 'none') {
+                dropableArea
+                    .css('top', y + 'px')
+                    .css('left', x + 'px')
+                    .css('width', w + 'px')
+                    .css('height', h + 'px')
+                    .css('display', '');
+            }
+        },
 
+        hidePanelDropableArea: function () {
+            var docker = this.docker();
+            var idPanel = this.title().replace(/\s+/g, '');
+
+            for(var area in docker.dropableAreas) {
+                if (docker.dropableAreas.hasOwnProperty(area)) {
+                    if (area.indexOf(idPanel) > -1) {
+                        docker.dropableAreas[area].css('display', 'none');
+                    }
+                }
+            }
+
+            for(var area in docker.dropableTabAreas) {
+                if (docker.dropableTabAreas.hasOwnProperty(area)) {
+                    if (area.indexOf(idPanel) > -1) {
+                        docker.dropableTabAreas[area].css('display', 'none');
+                    }
                 }
             }
         },

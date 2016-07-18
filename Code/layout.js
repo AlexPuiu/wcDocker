@@ -126,15 +126,31 @@ define([
                 }
             }
 
+            function __isPanelUnderMouse(panel, mouse) {
+                var panelPosition = panel.$container.offset();
+                if (mouse.y >=  panelPosition.top && mouse.y <= panelPosition.top + panel.$container.height() &&
+                    mouse.x >= panelPosition.left && mouse.x <= panelPosition.left + panel.$container.width())  {
+                    return true;
+                }
+                return false;
+            }
+
             var edgeAnchor = __getAnchorSizes(docker._options.edgeAnchorSize, docker.$container.outerWidth(), docker.$container.outerHeight());
             var panelAnchor = __getAnchorSizes(docker._options.panelAnchorSize, width, height);
 
             if (!same && this._parent && this._parent.instanceOf('wcPanel')) {
                 var panel = this._parent;
                 if(panel.isVisible()) {
-                    setTimeout(function () {
-                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse);
-                     }, 1);
+                    if(__isPanelUnderMouse(panel, mouse)) {
+                        setTimeout(function () {
+                            panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse);
+                        }, 1);
+                    } else {
+                        setTimeout(function () {
+                            panel.hidePanelDropableArea();
+                        }, 1);
+                    }
+
                 }
             }
 

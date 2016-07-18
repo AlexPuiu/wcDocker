@@ -1371,7 +1371,7 @@ define([
             // Mouse released
             $('body').on('mouseup', __onMouseUp);
             $('body').on('touchend', __onMouseUp);
-            $('body').on('mouseenter', '.wcFrame ', __onMouseEnterPanel);
+            //$('body').on('mouseenter', '.wcFrame ', __onMouseEnterPanel);
             // Clicking on a custom tab button.
             $('body').on('click', '.wcCustomTab .wcFrameButton', __onClickCustomTabButton);
             // Clicking on a panel frame button.

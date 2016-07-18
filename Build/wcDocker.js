@@ -1,4 +1,5 @@
-(function () {/**
+(function () {
+/**
  * @license almond 0.3.1 Copyright (c) 2011-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/almond for details
@@ -1939,22 +1940,34 @@ define('wcDocker/panel',[
         },
 
         __showDropArea: function(x, y, w, h, id, areas) {
-            //var dropableArea = areas[id];
-            var docker = this.docker();
-            var panelUnderFocus = docker.panelUnderFocus;
-            for (var area in areas) {
-                if (areas.hasOwnProperty(area)) {
-                    var panel = areas[area];
-                    if(area.indexOf(panelUnderFocus) > -1) {
-                        panel.css('top', y + 'px')
-                            .css('left', x + 'px')
-                            .css('width', w + 'px')
-                            .css('height', h + 'px')
-                            .css('display', '');
-                    } else {
-                        panel.css('display', 'none');
-                    }
+            var dropableArea = areas[id];
+            if (dropableArea && dropableArea.css('display') == 'none') {
+                dropableArea
+                    .css('top', y + 'px')
+                    .css('left', x + 'px')
+                    .css('width', w + 'px')
+                    .css('height', h + 'px')
+                    .css('display', '');
+            }
+        },
 
+        hidePanelDropableArea: function () {
+            var docker = this.docker();
+            var idPanel = this.title().replace(/\s+/g, '');
+
+            for(var area in docker.dropableAreas) {
+                if (docker.dropableAreas.hasOwnProperty(area)) {
+                    if (area.indexOf(idPanel) > -1) {
+                        docker.dropableAreas[area].css('display', 'none');
+                    }
+                }
+            }
+
+            for(var area in docker.dropableTabAreas) {
+                if (docker.dropableTabAreas.hasOwnProperty(area)) {
+                    if (area.indexOf(idPanel) > -1) {
+                        docker.dropableTabAreas[area].css('display', 'none');
+                    }
                 }
             }
         },
@@ -2375,13 +2388,7 @@ define('wcDocker/ghost',[
                 .css('left', rect.x + 'px')
                 .css('width', rect.w + 'px')
                 .css('height', rect.h + 'px');
-                /*this.$ghost.append($('<div style="width: 30%; height: auto; margin: 0 auto; padding: 10px; position: relative; color:black">' +
-                '<ul style="overflow: hidden">' +
-                '<li style="margin-right: 10px"><span style="margin: 5px; border: 1px solid #ccc; width: 20px; height: 20px; background-color: #8BB5C0">&nbsp;</span>Dock inside a panel</li>' +
-                '<li style="margin-right: 10px"><span style="margin: 5px; border: 1px solid #ccc; width: 20px; height: 20px; background-color: #F9CC9D">&nbsp;</span>Dock as a tab</li>' +
-                '<li style="margin-right: 10px"><span style="margin: 5px; border: 1px solid #ccc; width: 20px; height: 20px; background-color: #C2CF8A"></span>Dock on the edge</li>' +
-                '</ul>' +
-                '</div>'));*/
+
             this._anchorMouse = {
                 x: rect.x - mouse.x,
                 y: rect.y - mouse.y
@@ -5071,15 +5078,31 @@ define('wcDocker/layout',[
                 }
             }
 
+            function __isPanelUnderMouse(panel, mouse) {
+                var panelPosition = panel.$container.offset();
+                if (mouse.y >=  panelPosition.top && mouse.y <= panelPosition.top + panel.$container.height() &&
+                    mouse.x >= panelPosition.left && mouse.x <= panelPosition.left + panel.$container.width())  {
+                    return true;
+                }
+                return false;
+            }
+
             var edgeAnchor = __getAnchorSizes(docker._options.edgeAnchorSize, docker.$container.outerWidth(), docker.$container.outerHeight());
             var panelAnchor = __getAnchorSizes(docker._options.panelAnchorSize, width, height);
 
             if (!same && this._parent && this._parent.instanceOf('wcPanel')) {
                 var panel = this._parent;
                 if(panel.isVisible()) {
-                    setTimeout(function () {
-                        panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse);
-                     }, 1);
+                    if(__isPanelUnderMouse(panel, mouse)) {
+                        setTimeout(function () {
+                            panel.showDropableAreas(edgeAnchor, panelAnchor, width, height, titleSize, ghost, $elem, mouse);
+                        }, 1);
+                    } else {
+                        setTimeout(function () {
+                            panel.hidePanelDropableArea();
+                        }, 1);
+                    }
+
                 }
             }
 
@@ -20445,7 +20468,7 @@ define('wcDocker/docker',[
             // Mouse released
             $('body').on('mouseup', __onMouseUp);
             $('body').on('touchend', __onMouseUp);
-            $('body').on('mouseenter', '.wcFrame ', __onMouseEnterPanel);
+            //$('body').on('mouseenter', '.wcFrame ', __onMouseEnterPanel);
             // Clicking on a custom tab button.
             $('body').on('click', '.wcCustomTab .wcFrameButton', __onClickCustomTabButton);
             // Clicking on a panel frame button.
