@@ -786,21 +786,24 @@ define([
 
             for (var i = 0; i < docker.dropPositions.length; i++) {
                 var position = docker.dropPositions[i];
+
+                var divNameTab = 'dropAreaTab_' + position + '_' + idPanel;
+                var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize, $elem);
+                if (tabCoodrinates != null) {
+                    this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divNameTab, docker.dropablePanelAreas);
+                }
+
                 var divName = 'dropArea_' + position + '_' + idPanel;
                 var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, $elem);
                 if (coordinates != null) {
-                    this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName, docker.dropableAreas);
+                    this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName, docker.dropablePanelAreas);
                 }
                 var divNameEdge = 'dropAreaEdge_' + position;
                 var edgeCoordinates = this.__getEdgeDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, ghost);
                 if (edgeCoordinates != null) {
                     this.__showDropArea(edgeCoordinates.x, edgeCoordinates.y, edgeCoordinates.w, edgeCoordinates.h, divNameEdge, docker.dropableEdgeAreas);
                 }
-                var divNameTab = 'dropAreaTab_' + position + '_' + idPanel;
-                var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize, $elem);
-                if (tabCoodrinates != null) {
-                    this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divNameTab, docker.dropableTabAreas);
-                }
+
             }
         },
 
@@ -954,18 +957,10 @@ define([
             var docker = this.docker();
             var idPanel = this.title().replace(/\s+/g, '');
 
-            for(var area in docker.dropableAreas) {
-                if (docker.dropableAreas.hasOwnProperty(area)) {
+            for(var area in docker.dropablePanelAreas) {
+                if (docker.dropablePanelAreas.hasOwnProperty(area)) {
                     if (area.indexOf(idPanel) > -1) {
-                        docker.dropableAreas[area].css('display', 'none');
-                    }
-                }
-            }
-
-            for(var area in docker.dropableTabAreas) {
-                if (docker.dropableTabAreas.hasOwnProperty(area)) {
-                    if (area.indexOf(idPanel) > -1) {
-                        docker.dropableTabAreas[area].css('display', 'none');
+                        docker.dropablePanelAreas[area].css('display', 'none');
                     }
                 }
             }

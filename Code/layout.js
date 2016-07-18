@@ -150,7 +150,6 @@ define([
                             panel.hidePanelDropableArea();
                         }, 1);
                     }
-
                 }
             }
 
@@ -243,19 +242,6 @@ define([
                 // Left edge
                 if (mouse.y >= outerOffset.top && mouse.y <= outerOffset.top + outerHeight &&
                     mouse.x >= outerOffset.left + titleSize && mouse.x <= outerOffset.left + titleSize + edgeAnchor.x) {
-                    var x = outerOffset.left;
-                    var y = outerOffset.top;
-                    var w = outerOffset.left + titleSize + edgeAnchor.x;
-                    var h = outerOffset.top + outerHeight;
-                    /*var drpArea = $('#dropAreaEL');
-                    if (!drpArea.length) {
-                        var dropArea = $('<div id="dropAreaEL" style="background: blue; z-index: 81; position: fixed; text-align: right ">DROP HERE</div>')
-                            .css('top', y + 'px')
-                            .css('left', x + 'px')
-                            .css('width', w + 'px')
-                            .css('height', h + 'px');
-                        $('body').append(dropArea);
-                    }*/
                     ghost.anchor(mouse, {
                         x: outerOffset.left - 2,
                         y: outerOffset.top - 2,

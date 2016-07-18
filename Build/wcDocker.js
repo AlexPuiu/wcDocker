@@ -1787,21 +1787,24 @@ define('wcDocker/panel',[
 
             for (var i = 0; i < docker.dropPositions.length; i++) {
                 var position = docker.dropPositions[i];
+
+                var divNameTab = 'dropAreaTab_' + position + '_' + idPanel;
+                var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize, $elem);
+                if (tabCoodrinates != null) {
+                    this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divNameTab, docker.dropablePanelAreas);
+                }
+
                 var divName = 'dropArea_' + position + '_' + idPanel;
                 var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, $elem);
                 if (coordinates != null) {
-                    this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName, docker.dropableAreas);
+                    this.__showDropArea(coordinates.x, coordinates.y, coordinates.w, coordinates.h, divName, docker.dropablePanelAreas);
                 }
                 var divNameEdge = 'dropAreaEdge_' + position;
                 var edgeCoordinates = this.__getEdgeDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, ghost);
                 if (edgeCoordinates != null) {
                     this.__showDropArea(edgeCoordinates.x, edgeCoordinates.y, edgeCoordinates.w, edgeCoordinates.h, divNameEdge, docker.dropableEdgeAreas);
                 }
-                var divNameTab = 'dropAreaTab_' + position + '_' + idPanel;
-                var tabCoodrinates = this.__getTabDropAreaCoordinates(position, edgeAnchor, panelAnchor, width, height, titleSize, $elem);
-                if (tabCoodrinates != null) {
-                    this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divNameTab, docker.dropableTabAreas);
-                }
+
             }
         },
 
@@ -1955,18 +1958,10 @@ define('wcDocker/panel',[
             var docker = this.docker();
             var idPanel = this.title().replace(/\s+/g, '');
 
-            for(var area in docker.dropableAreas) {
-                if (docker.dropableAreas.hasOwnProperty(area)) {
+            for(var area in docker.dropablePanelAreas) {
+                if (docker.dropablePanelAreas.hasOwnProperty(area)) {
                     if (area.indexOf(idPanel) > -1) {
-                        docker.dropableAreas[area].css('display', 'none');
-                    }
-                }
-            }
-
-            for(var area in docker.dropableTabAreas) {
-                if (docker.dropableTabAreas.hasOwnProperty(area)) {
-                    if (area.indexOf(idPanel) > -1) {
-                        docker.dropableTabAreas[area].css('display', 'none');
+                        docker.dropablePanelAreas[area].css('display', 'none');
                     }
                 }
             }
@@ -5102,7 +5097,6 @@ define('wcDocker/layout',[
                             panel.hidePanelDropableArea();
                         }, 1);
                     }
-
                 }
             }
 
@@ -5195,19 +5189,6 @@ define('wcDocker/layout',[
                 // Left edge
                 if (mouse.y >= outerOffset.top && mouse.y <= outerOffset.top + outerHeight &&
                     mouse.x >= outerOffset.left + titleSize && mouse.x <= outerOffset.left + titleSize + edgeAnchor.x) {
-                    var x = outerOffset.left;
-                    var y = outerOffset.top;
-                    var w = outerOffset.left + titleSize + edgeAnchor.x;
-                    var h = outerOffset.top + outerHeight;
-                    /*var drpArea = $('#dropAreaEL');
-                    if (!drpArea.length) {
-                        var dropArea = $('<div id="dropAreaEL" style="background: blue; z-index: 81; position: fixed; text-align: right ">DROP HERE</div>')
-                            .css('top', y + 'px')
-                            .css('left', x + 'px')
-                            .css('width', w + 'px')
-                            .css('height', h + 'px');
-                        $('body').append(dropArea);
-                    }*/
                     ghost.anchor(mouse, {
                         x: outerOffset.left - 2,
                         y: outerOffset.top - 2,
@@ -19201,13 +19182,11 @@ define('wcDocker/docker',[
             this._menuTimer = 0;
             this._mouseOrigin = {x: 0, y: 0};
             this.dropableAreaHtml = $('<div style="background: #8BB5C0; z-index: 19; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
-            this.dropableTabAreaHtml = $('<div style="background: #F9CC9D; z-index: 21; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
-            this.dropableEdgeAreaHtml = $('<div style="background: #C2CF8A; z-index: 20; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
+            this.dropableTabAreaHtml = $('<div style="background: #F9CC9D; z-index: 20; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
+            this.dropableEdgeAreaHtml = $('<div style="background: #C2CF8A; z-index: 21; position: fixed; text-align: right; border: black dashed 1px "></div>').css('display', 'none');
             this.dropPositions = ['top', 'bottom', 'left', 'right'];
-            this.panelUnderFocus = '';
-            this.dropableAreas = {};
+            this.dropablePanelAreas = {};
             this.dropableEdgeAreas = {};
-            this.dropableTabAreas= {};
             this._resizeData = {
                 time: -1,
                 timeout: false,
@@ -19351,13 +19330,13 @@ define('wcDocker/docker',[
             for (var i = 0; i < this.dropPositions.length; i++) {
                 var id = 'dropArea_' +   this.dropPositions[i] + '_' + idPanel;
                 var clone = this.dropableAreaHtml.clone().attr('id', id);
-                this.dropableAreas[id] = clone;
-                $('body').append(this.dropableAreas[id]);
+                this.dropablePanelAreas[id] = clone;
+                $('body').append(this.dropablePanelAreas[id]);
 
                 var idTabArea = 'dropAreaTab_' +   this.dropPositions[i] + '_' + idPanel;
                 var newClone = this.dropableTabAreaHtml.clone().attr('id', idTabArea);
-                this.dropableTabAreas[idTabArea] = newClone;
-                $('body').append(this.dropableTabAreas[idTabArea]);
+                this.dropablePanelAreas[idTabArea] = newClone;
+                $('body').append(this.dropablePanelAreas[idTabArea]);
             }
 
             var $menu = $('menu').find('menu');
@@ -20468,7 +20447,7 @@ define('wcDocker/docker',[
             // Mouse released
             $('body').on('mouseup', __onMouseUp);
             $('body').on('touchend', __onMouseUp);
-            //$('body').on('mouseenter', '.wcFrame ', __onMouseEnterPanel);
+
             // Clicking on a custom tab button.
             $('body').on('click', '.wcCustomTab .wcFrameButton', __onClickCustomTabButton);
             // Clicking on a panel frame button.
@@ -20491,26 +20470,6 @@ define('wcDocker/docker',[
                 self._mouseOrigin.y = mouse.y;
             }
 
-            function __onMouseEnterPanel(ev) {
-                var mouse = self.__mouse(ev);
-
-                if (mouse.which === 3 || (
-                    !self._draggingSplitter && !self._draggingFrameSizer && !self._draggingCustomTabFrame && !self._ghost && !self._draggingFrame && !self._draggingFrameTab)) {
-                    return true;
-                }
-
-                var panelTarget = $(this);
-                if (!panelTarget) {
-                    return;
-                }
-                var titleNode = $(this).find('.wcFrameTitle');
-                if(titleNode.length == 0){
-                    return;
-                }
-                self.panelUnderFocus = titleNode.text().replace(/\s+/g, '');
-                console.log(self.panelUnderFocus);
-            }
-
             // on mouseup
             function __onMouseUp(event) {
                 var mouse = self.__mouse(event);
@@ -20518,10 +20477,10 @@ define('wcDocker/docker',[
                     return true;
                 }
 
-                for (var area in self.dropableAreas) {
-                    if (self.dropableAreas.hasOwnProperty(area)) {
+                for (var area in self.dropablePanelAreas) {
+                    if (self.dropablePanelAreas.hasOwnProperty(area)) {
                        var id = '#' + area;
-                        self.dropableAreas[area].css('display', 'none');
+                        self.dropablePanelAreas[area].css('display', 'none');
                     }
                 }
 
@@ -20529,12 +20488,6 @@ define('wcDocker/docker',[
                     if (self.dropableEdgeAreas.hasOwnProperty(area)) {
                         var id = '#' + area;
                         self.dropableEdgeAreas[area].css('display', 'none');
-                    }
-                }
-                for (var area in self.dropableTabAreas) {
-                    if (self.dropableTabAreas.hasOwnProperty(area)) {
-                        var id = '#' + area;
-                        self.dropableTabAreas[area].css('display', 'none');
                     }
                 }
 
