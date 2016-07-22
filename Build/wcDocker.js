@@ -20359,13 +20359,13 @@ define('wcDocker/docker',[
 
             for (var area in this.dropablePanelAreas) {
                 if (this.dropablePanelAreas.hasOwnProperty(area)) {
-                    this.dropablePanelAreas[area].css('display', 'none');
+                    this.dropablePanelAreas[area].hide();
                 }
             }
 
             for (var area in this.dropableEdgeAreas) {
                 if (this.dropableEdgeAreas.hasOwnProperty(area)) {
-                    this.dropableEdgeAreas[area].css('display', 'none');
+                    this.dropableEdgeAreas[area].hide();
                 }
             }
 
@@ -20501,13 +20501,13 @@ define('wcDocker/docker',[
 
                 for (var area in self.dropablePanelAreas) {
                     if (self.dropablePanelAreas.hasOwnProperty(area)) {
-                        self.dropablePanelAreas[area].css('display', 'none');
+                        self.dropablePanelAreas[area].hide();
                     }
                 }
 
                 for (var area in self.dropableEdgeAreas) {
                     if (self.dropableEdgeAreas.hasOwnProperty(area)) {
-                        self.dropableEdgeAreas[area].css('display', 'none');
+                        self.dropableEdgeAreas[area].hide();
                     }
                 }
 
