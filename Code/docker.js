@@ -1302,15 +1302,6 @@ define([
 
             this.off();
         },
-        
-        showDropableAreas: function () {
-            var panels = this.findPanels();
-            for(var i = 0; i < panels.length; i++) {
-                if (panels[i].isVisible()) {
-                   // panels[i].showDropableAreas();
-                }
-            }
-        },
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

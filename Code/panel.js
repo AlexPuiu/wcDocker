@@ -787,8 +787,6 @@ define([
             for (var i = 0; i < docker.dropPositions.length; i++) {
                 var position = docker.dropPositions[i];
 
-
-
                 var divName = 'dropArea_' + position + '_' + idPanel;
                 var coordinates = this.__getDropAreaCoordinates(position, edgeAnchor,panelAnchor, width, height, titleSize, $elem);
                 if (coordinates != null) {
@@ -944,30 +942,16 @@ define([
         },
 
         __showDropArea: function(x, y, w, h, id, areas) {
-
-            for(area in areas) {
-                var dropableArea = areas[id];
-                if (area == id) {
-                    if (dropableArea && dropableArea.css('display') == 'none') {
-                        dropableArea
-                            .css('top', y + 'px')
-                            .css('left', x + 'px')
-                            .css('width', w + 'px')
-                            .css('height', h + 'px')
-                            .css('display', '');
-                    } else {
-                        dropableArea.css('display', 'none');
-                    }
-                }
-            }
+            var style = {
+                'top': y + 'px',
+                'left': x + 'px',
+                'width': w + 'px',
+                'height': h + 'px',
+                'display': ''
+            };
             var dropableArea = areas[id];
             if (dropableArea && dropableArea.css('display') == 'none') {
-                dropableArea
-                    .css('top', y + 'px')
-                    .css('left', x + 'px')
-                    .css('width', w + 'px')
-                    .css('height', h + 'px')
-                    .css('display', '');
+                dropableArea.css(style);
             }
         },
 
