@@ -1963,7 +1963,7 @@ define('wcDocker/panel',[
             for(var area in docker.dropablePanelAreas) {
                 if (docker.dropablePanelAreas.hasOwnProperty(area)) {
                     if (area.indexOf(idPanel) > -1) {
-                        docker.dropablePanelAreas[area].css('display', 'none');
+                        docker.dropablePanelAreas[area].hide();
                     }
                 }
             }
