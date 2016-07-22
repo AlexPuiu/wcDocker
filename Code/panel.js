@@ -805,7 +805,7 @@ define([
                 if (tabCoodrinates != null) {
                     this.__showDropArea(tabCoodrinates.x, tabCoodrinates.y, tabCoodrinates.w, tabCoodrinates.h, divNameTab, docker.dropablePanelAreas);
                 }
-                docker.dropAreaLegend.css('display', '');
+                //docker.dropAreaLegend.css('display', '');
             }
         },
 
