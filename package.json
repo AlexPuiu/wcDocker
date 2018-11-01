@@ -11,7 +11,7 @@
     "dynamic"
   ],
   "homepage": "http://docker.webcabin.org/",
-  "main": "Build/wcDocker.js",
+  "main": "index.js",
   "ignore": [
     "/.*",
     "favicon.ico",
